@@ -34,9 +34,9 @@ def convert_to_readable(string: str) -> str:
 def import_from_pack(path: str):
     """Handles importing module and class"""
 
-    path = path.split('.')
+    *file_directory, class_name = path.split('.')
     
-    return getattr(import_module(f"pack.{config.PACK_NAME}.{'.'.join(path[:-1])}"), path[-1])
+    return getattr(import_module(f"pack.{config.PACK_NAME}.{'.'.join(file_directory)}"), class_name)
 
 # def get_parents(class_):
 #     """
