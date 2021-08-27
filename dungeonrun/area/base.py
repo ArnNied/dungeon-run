@@ -56,7 +56,7 @@ class BaseArea:
             paths.append(convert_to_readable(path))
 
         paths = self.path_separator.join(paths)
-        print("\n{paths}".format(paths=paths))
+        print(f"\n{paths}")
 
     def set_next_area(self):
         """Set self.next_area for importing and executing"""
@@ -68,14 +68,14 @@ class BaseArea:
         chosen_path = self.paths.get(chosen_path, False)
 
         if chosen_path == False:
-            print("Path {path} doesn't exist".format(path=player_choice))
+            print(f"Path {player_choice} doesn't exist")
         else:
             self.next_area = chosen_path
 
     def import_next_area(self, next_area):
         """Import the class of next area to instantiate in main.py"""
         
-        return import_from_pack(f'pack.{next_area}')
+        return import_from_pack(f'area.{next_area}')
 
 
 class Dialogue:
