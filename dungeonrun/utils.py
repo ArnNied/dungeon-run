@@ -6,9 +6,9 @@ from random import random, uniform
 from importlib import import_module
 from inspect import getmro
 
-from dungeonrun.config import PACK_NAME
+from dungeonrun import config
 
-def rng():
+def rng() -> float:
     """Main rng function"""
 
     return random()
@@ -36,7 +36,7 @@ def import_from_pack(path: str):
 
     path = path.split('.')
     
-    return getattr(import_module(f"pack.{PACK_NAME}.{'.'.join(path[:-1])}"), path[-1])
+    return getattr(import_module(f"pack.{config.PACK_NAME}.{'.'.join(path[:-1])}"), path[-1])
 
 # def get_parents(class_):
 #     """
