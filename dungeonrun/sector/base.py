@@ -96,3 +96,18 @@ class Dialogue:
                 sleep(line.get('after', 1))
 
         super().__init__()
+
+class MultipleHostile:
+    """
+    Class to inherit when a sector will have multiple enemy encounter
+    """
+
+    enemies = []
+
+    def __init__(self):
+        enemies = self.encounter_check(self.import_enemies())
+
+        for enemy in enemies:
+            print(f"encountered {enemy.name}")
+
+        super().__init__()
