@@ -8,11 +8,13 @@ class BaseSector:
     Class to inherit when creating an sector.
 
     Note that this class should be inherited last (rightmost) after any sector mixin used.
+
+    paths: {"sector_key": "path.to.module"}
     """
 
     player = None
 
-    paths = None # {"sector_key": "sector_module_location"}
+    paths = None
     path_separator = " :: "
 
     next_sector = None
@@ -76,20 +78,19 @@ class BaseSector:
 
 
 class Dialogue:
-    """Class to inherit when a sector need to display dialogue(s)"""
+    """
+    Class to inherit when a sector need to display dialogue(s)
 
-    dialogue = [
-        {
-            "text": "text here",
-            "before": 0,
-            "after": 0,
-        }
-    ]
+    dialogue: [{"text": string, "before": int|float, "after": int|float},]
+    """
+
+    dialogue = []
 
     def __init__(self):
+        """Print dialogue(s) with delay before and/or after"""
+
         if self.dialogue != None:
             for line in self.dialogue:
-                # Space between before and after text
                 sleep(line.get('before', 0))
                 print(line['text'])
                 sleep(line.get('after', 1))
