@@ -1,7 +1,7 @@
 from importlib import import_module
 from time import sleep
 
-from dungeonrun.utils import convert_to_readable, convert_to_keys, import_from_pack
+from dungeonrun.utils import convert_to_readable, convert_to_keys, import_from_pack, rng
 
 class BaseSector:
     """
@@ -9,7 +9,7 @@ class BaseSector:
 
     Note that this class should be inherited last (rightmost) after any sector mixin used.
 
-    paths: {"sector_key": "path.to.module"}
+    paths: {"sector_key": "module.class"}
     """
 
     player = None
@@ -97,9 +97,11 @@ class Dialogue:
 
         super().__init__()
 
-class MultipleHostile:
+class MultipleHostileEncounter:
     """
     Class to inherit when a sector will have multiple enemy encounter
+
+    enemies: ["module.class",]
     """
 
     enemies = []
@@ -111,3 +113,26 @@ class MultipleHostile:
             print(f"encountered {enemy.name}")
 
         super().__init__()
+
+    def import_enemies(self):
+        """Import enemy module from the list self.enemies"""
+
+        imported_enemies = []
+
+        for enemy in self.enemies:
+            # import enemy module
+            imported_enemies.append(import_from_pack(f"enemies.{enemy}"))
+
+        # return sorted enemy by encounter_chance from lowest
+        # so lowest chance enemy will be checked first
+        return sorted(imported_enemies, key=lambda x: x.encounter_chance)
+
+    def encounter_check(self, enemies):
+        """Return enemies after being rng checked"""
+
+        checked_enemies = [enemy for enemy in enemies if rng() <= enemy.encounter_chance]
+        # for enemy in enemies:
+        #     if rng() <= enemy.encounter_chance:
+        #         checked_enemies.append(enemy)
+
+        return checked_enemies
