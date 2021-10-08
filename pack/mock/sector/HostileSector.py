@@ -1,6 +1,6 @@
-from dungeonrun.sector.base import BaseSector, MultipleHostileEncounter
+from dungeonrun.sector.base import BaseSector, Dialogue, MultipleHostileEncounter
 
-class HostileSector(MultipleHostileEncounter, BaseSector):
+class HostileSector(MultipleHostileEncounter, Dialogue, BaseSector):
     paths = {
         "go_south": "SectorOne.South",
         "go_north": "SectorOne.North",
