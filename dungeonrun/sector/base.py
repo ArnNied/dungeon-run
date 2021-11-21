@@ -1,5 +1,6 @@
 from time import sleep
 
+from dungeonrun.actor.base import BaseActor
 from dungeonrun.utils import (
     convert_to_keys,
     convert_to_readable,
@@ -27,8 +28,8 @@ class BaseSector:
     def __init__(self):
         super().__init__()
 
-    def execute(self):
-        """Main function to call"""
+    def execute(self) -> "BaseSector":
+        """Main function to call."""
 
         self.paths_check()
         while self.next_sector == None:
@@ -39,35 +40,31 @@ class BaseSector:
 
         return imported_sector
 
-    def paths_check(self):
+    def paths_check(self) -> None:
         """
-        Check if self.paths is a string pointing to an sector
-        OR if self.paths is None then it will be considered an 'ending'
+        Check if self.paths is a string pointing to a sector.
+        OR if self.paths is None then it will be considered an 'ending'.
         """
 
-        if self.paths == None:
+        if self.paths is None:
             print("end")
         elif type(self.paths) is str:
             self.next_sector = self.paths
-        # elif self.paths is None:
-        #     raise exc.PathsImproperlyConfigured
 
-    def display_available_path(self):
-        """Convert underscore style to space for human read"""
+    def display_available_path(self) -> None:
+        """Output available path(s) to the terminal."""
 
-        paths = []
-        for path in self.paths:
-            paths.append(convert_to_readable(path))
-
+        paths = [convert_to_readable(path) for path in self.paths]
         paths = self.path_separator.join(paths)
+
         print(f"\n{paths}")
 
-    def set_next_sector(self):
-        """Set self.next_sector for importing and executing"""
+    def set_next_sector(self) -> None:
+        """Set self.next_sector for importing and executing."""
 
         player_choice = input("> ")
 
-        # Convert from human-readable (user input) to dictionary keys for self.paths use
+        # Convert from human-readable (user input) to dictionary keys for self.paths use.
         chosen_path = convert_to_keys(player_choice)
         chosen_path = self.paths.get(chosen_path, False)
 
@@ -76,15 +73,15 @@ class BaseSector:
         else:
             self.next_sector = chosen_path
 
-    def import_next_sector(self, next_sector):
-        """Import the class of next sector to instantiate in main.py"""
+    def import_next_sector(self, next_sector: str) -> "BaseSector":
+        """Import the class of next sector to instantiate in main.py."""
 
         return import_from_pack(f"sector.{next_sector}")
 
 
 class Dialogue:
     """
-    Class to inherit when a sector need to display dialogue(s)
+    Class to inherit when a sector need to display dialogue(s).
 
     dialogue: [{"text": string, "before": int|float, "after": int|float},]
     """
@@ -92,9 +89,9 @@ class Dialogue:
     dialogue = []
 
     def __init__(self):
-        """Print dialogue(s) with delay before and/or after"""
+        """Print dialogue(s) with delay before and/or after."""
 
-        if self.dialogue != None:
+        if self.dialogue is not None:
             for line in self.dialogue:
                 sleep(line.get("before", 0))
                 print(line["text"])
@@ -105,7 +102,7 @@ class Dialogue:
 
 class MultipleHostileEncounter:
     """
-    Class to inherit when a sector will have multiple enemy encounter
+    Class to inherit when a sector will have multiple enemy encounter.
 
     enemies: ["module.class",]
     """
@@ -120,14 +117,12 @@ class MultipleHostileEncounter:
 
         super().__init__()
 
-    def import_enemies(self):
-        """Import enemy module from the list self.enemies"""
+    def import_enemies(self) -> list[BaseActor]:
+        """Import enemy module from the list self.enemies."""
 
-        imported_enemies = []
-
-        for enemy in self.enemies:
-            # import enemy module
-            imported_enemies.append(import_from_pack(f"enemies.{enemy}"))
+        imported_enemies = [
+            import_from_pack(f"enemies.{enemy}") for enemy in self.enemies
+        ]
 
         # return sorted enemy by encounter_chance from lowest
         # so lowest chance enemy will be checked first
@@ -135,16 +130,13 @@ class MultipleHostileEncounter:
             imported_enemies, key=lambda x: x.encounter_chance.value.get()
         )
 
-    def encounter_check(self, enemies):
-        """Return enemies after being rng checked"""
+    def encounter_check(self, enemies: list[str]) -> list[str]:
+        """Return enemies after being rng checked."""
 
         checked_enemies = [
             enemy
             for enemy in enemies
-            if rng() <= enemy.encounter_chance.value.get()
+            if rng(enemy.encounter_chance.value.get())
         ]
-        # for enemy in enemies:
-        #     if rng() <= enemy.encounter_chance:
-        #         checked_enemies.append(enemy)
 
         return checked_enemies

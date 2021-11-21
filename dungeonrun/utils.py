@@ -1,37 +1,22 @@
-import inspect
-import os
-import sys
 from importlib import import_module
-from inspect import getmro
-from random import random, uniform
-from time import sleep
+from random import random
+from typing import Union
 
 from dungeonrun import config
 
 
-def rng() -> float:
-    """Main rng function"""
+def rng(val: float = None) -> Union[bool, float]:
+    """Will return bool after evaluating `random() <= val` or return float from `random()`"""
+
+    if val is not None:
+        return random() <= val
 
     return random()
 
 
-def timed(text, before=0, after=0.75):
-    """
-    Add a pause before and/or after a text.
-
-    before: Mainly used for notification such as level up
-
-    after: Mainly used for dialogue
-    """
-
-    sleep(before)
-    print(text)
-    sleep(after)
-
-
 def convert_to_keys(string: str) -> str:
     """
-    This will replace space in string with underscore for dictionary key use
+    This will replace space in string with underscore for dictionary key use.
 
     'This Is An Example' -> 'this_is_an_example'
     """
@@ -41,7 +26,7 @@ def convert_to_keys(string: str) -> str:
 
 def convert_to_readable(string: str) -> str:
     """
-    This will replace underscore in string with space for user to read
+    This will replace underscore in string with space for user to read.
 
     'this_is_an_example' -> 'This Is An Example'
     """
@@ -50,7 +35,7 @@ def convert_to_readable(string: str) -> str:
 
 
 def import_from_pack(path: str):
-    """Handles importing module and class"""
+    """Handles importing module and class."""
 
     *file_directory, class_name = path.split(".")
 
