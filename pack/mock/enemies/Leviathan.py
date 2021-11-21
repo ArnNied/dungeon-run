@@ -1,6 +1,6 @@
-from dungeonrun.actor.base import BaseActor
+from dungeonrun.actor.base import BaseActor, Prop, PropWithMax
 
 
 class Leviathan(BaseActor):
-    name = "Leviathan Class"
-    encounter_chance = 0.1
+    name = Prop("Leviathan Class")
+    encounter_chance = Prop(0.1)

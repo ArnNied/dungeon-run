@@ -1,4 +1,3 @@
-from importlib import import_module
 from time import sleep
 
 from dungeonrun.utils import (
@@ -117,7 +116,7 @@ class MultipleHostileEncounter:
         enemies = self.encounter_check(self.import_enemies())
 
         for enemy in enemies:
-            print(f"encountered {enemy.name}")
+            print(f"encountered {enemy.name.value.get()}")
 
         super().__init__()
 
@@ -132,13 +131,17 @@ class MultipleHostileEncounter:
 
         # return sorted enemy by encounter_chance from lowest
         # so lowest chance enemy will be checked first
-        return sorted(imported_enemies, key=lambda x: x.encounter_chance)
+        return sorted(
+            imported_enemies, key=lambda x: x.encounter_chance.value.get()
+        )
 
     def encounter_check(self, enemies):
         """Return enemies after being rng checked"""
 
         checked_enemies = [
-            enemy for enemy in enemies if rng() <= enemy.encounter_chance
+            enemy
+            for enemy in enemies
+            if rng() <= enemy.encounter_chance.value.get()
         ]
         # for enemy in enemies:
         #     if rng() <= enemy.encounter_chance:
