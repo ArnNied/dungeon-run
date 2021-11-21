@@ -1,10 +1,9 @@
+import inspect
 import os
 import sys
-import inspect
-
-from random import random, uniform
 from importlib import import_module
 from inspect import getmro
+from random import random, uniform
 from time import sleep
 
 from dungeonrun import config
@@ -56,5 +55,6 @@ def import_from_pack(path: str):
     *file_directory, class_name = path.split(".")
 
     return getattr(
-        import_module(f"pack.{config.PACK_NAME}.{'.'.join(file_directory)}"), class_name
+        import_module(f"pack.{config.PACK_NAME}.{'.'.join(file_directory)}"),
+        class_name,
     )

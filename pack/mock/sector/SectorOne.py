@@ -2,7 +2,10 @@ from dungeonrun.sector.base import BaseSector, Dialogue
 
 
 class North(Dialogue, BaseSector):
-    paths = {"go_south": "SectorOne.South", "go_hostile": "HostileSector.HostileSector"}
+    paths = {
+        "go_south": "SectorOne.South",
+        "go_hostile": "HostileSector.HostileSector",
+    }
 
     dialogue = [{"text": "You're in the north sector"}]
 
@@ -11,7 +14,10 @@ class North(Dialogue, BaseSector):
 
 
 class South(Dialogue, BaseSector):
-    paths = {"go_north": "SectorOne.North", "go_hostile": "HostileSector.HostileSector"}
+    paths = {
+        "go_north": "SectorOne.North",
+        "go_hostile": "HostileSector.HostileSector",
+    }
 
     dialogue = [{"text": "You're in the south sector"}]
 

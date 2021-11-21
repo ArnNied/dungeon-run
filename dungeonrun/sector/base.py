@@ -1,7 +1,12 @@
 from importlib import import_module
 from time import sleep
 
-from dungeonrun.utils import convert_to_readable, convert_to_keys, import_from_pack, rng
+from dungeonrun.utils import (
+    convert_to_keys,
+    convert_to_readable,
+    import_from_pack,
+    rng,
+)
 
 
 class BaseSector:

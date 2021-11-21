@@ -3,7 +3,7 @@ A semi game-engine for console-based game made using python. Old version can be 
 
 ## Running
 1. Set pack to be played inside `dungeonrun/config.py`
-2. On root directory, `py main.py` 
+2. On root directory, `py main.py`
 
 ## Creating your own pack
 **TBA**

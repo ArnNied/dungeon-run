@@ -1,4 +1,8 @@
-from dungeonrun.sector.base import BaseSector, Dialogue, MultipleHostileEncounter
+from dungeonrun.sector.base import (
+    BaseSector,
+    Dialogue,
+    MultipleHostileEncounter,
+)
 
 
 class HostileSector(MultipleHostileEncounter, Dialogue, BaseSector):

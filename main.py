@@ -1,17 +1,20 @@
 import sys
-
 from importlib import import_module
 from os import system
 
 from dungeonrun import config as cf
 from dungeonrun.actor.base import BaseActor
 
-
 if __name__ == "__main__":
     try:
-        pack_config_path = "pack.{pack_name}.config".format(pack_name=cf.PACK_NAME)
+        pack_config_path = "pack.{pack_name}.config".format(
+            pack_name=cf.PACK_NAME
+        )
         pack_config = import_module(pack_config_path)
-        SECTOR_BEGIN_FILE, SECTOR_BEGIN_CLASS = pack_config.SECTOR_BEGIN.split(".")
+        (
+            SECTOR_BEGIN_FILE,
+            SECTOR_BEGIN_CLASS,
+        ) = pack_config.SECTOR_BEGIN.split(".")
     except (AttributeError, ValueError):
         print(
             """
