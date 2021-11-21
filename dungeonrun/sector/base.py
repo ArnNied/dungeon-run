@@ -3,6 +3,7 @@ from time import sleep
 
 from dungeonrun.utils import convert_to_readable, convert_to_keys, import_from_pack, rng
 
+
 class BaseSector:
     """
     Class to inherit when creating an sector.
@@ -74,7 +75,7 @@ class BaseSector:
     def import_next_sector(self, next_sector):
         """Import the class of next sector to instantiate in main.py"""
 
-        return import_from_pack(f'sector.{next_sector}')
+        return import_from_pack(f"sector.{next_sector}")
 
 
 class Dialogue:
@@ -91,11 +92,12 @@ class Dialogue:
 
         if self.dialogue != None:
             for line in self.dialogue:
-                sleep(line.get('before', 0))
-                print(line['text'])
-                sleep(line.get('after', 1))
+                sleep(line.get("before", 0))
+                print(line["text"])
+                sleep(line.get("after", 1))
 
         super().__init__()
+
 
 class MultipleHostileEncounter:
     """
@@ -130,7 +132,9 @@ class MultipleHostileEncounter:
     def encounter_check(self, enemies):
         """Return enemies after being rng checked"""
 
-        checked_enemies = [enemy for enemy in enemies if rng() <= enemy.encounter_chance]
+        checked_enemies = [
+            enemy for enemy in enemies if rng() <= enemy.encounter_chance
+        ]
         # for enemy in enemies:
         #     if rng() <= enemy.encounter_chance:
         #         checked_enemies.append(enemy)

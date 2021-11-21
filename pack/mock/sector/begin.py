@@ -1,9 +1,8 @@
 from dungeonrun.sector.base import BaseSector, Dialogue
 
+
 class SectorBegin(Dialogue, BaseSector):
-    paths = {
-        "go_north": "SectorOne.North"
-    }
+    paths = {"go_north": "SectorOne.North"}
     dialogue = [
         {
             "text": "hello",
