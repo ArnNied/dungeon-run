@@ -59,11 +59,14 @@ class BaseActor:
         },
     )
 
-    def display_stat(self):
-        for row in range(len(self.visible_prop)):
+    def stringify_prop(self):
+        rows = []
+        for i in range(len(self.visible_prop)):
             stat_row = [
                 f"{key}: {getattr(self, val)}"
-                for key, val in self.visible_prop[row].items()
+                for key, val in self.visible_prop[i].items()
             ]
 
-            print("\t".join(stat_row))
+            rows.append("\t".join(stat_row))
+
+        return "\n".join(rows)

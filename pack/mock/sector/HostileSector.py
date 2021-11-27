@@ -5,7 +5,7 @@ from dungeonrun.sector.base import (
 )
 
 
-class HostileSector(MultipleHostileEncounter, Dialogue, BaseSector):
+class HostileSector(BaseSector, MultipleHostileEncounter, Dialogue):
     paths = {
         "go_south": "SectorOne.South",
         "go_north": "SectorOne.North",
@@ -26,4 +26,4 @@ class HostileSector(MultipleHostileEncounter, Dialogue, BaseSector):
     ]
 
     def __init__(self, player):
-        super().__init__()
+        super().__init__(player)

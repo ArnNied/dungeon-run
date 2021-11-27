@@ -1,6 +1,7 @@
 from time import sleep
 
 from dungeonrun.actor.base import BaseActor
+from dungeonrun.mechanics.encounter import Encounter
 from dungeonrun.utils import (
     convert_to_keys,
     convert_to_readable,
@@ -13,19 +14,18 @@ class BaseSector:
     """
     Class to inherit when creating an sector.
 
-    Note that this class should be inherited last (rightmost) after any sector mixin used.
+    Note that this class should be inherited first (leftmost) before any sector mixin used.
 
     paths: {"sector_key": "module.class"}
     """
-
-    player = None
 
     paths = None
     path_separator = " :: "
 
     next_sector = None
 
-    def __init__(self):
+    def __init__(self, player):
+        self.player = player
         super().__init__()
 
     def execute(self) -> "BaseSector":
@@ -115,8 +115,7 @@ class MultipleHostileEncounter:
         for enemy in enemies:
             enemy = enemy()
             print(f"encountered {enemy.name.value.get()}")
-            # print(enemy.name)
-            enemy.display_stat()
+            Encounter(self.player, enemy)
             print()
 
         super().__init__()
