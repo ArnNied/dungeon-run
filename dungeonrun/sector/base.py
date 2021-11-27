@@ -113,7 +113,11 @@ class MultipleHostileEncounter:
         enemies = self.encounter_check(self.import_enemies())
 
         for enemy in enemies:
+            enemy = enemy()
             print(f"encountered {enemy.name.value.get()}")
+            # print(enemy.name)
+            enemy.display_stat()
+            print()
 
         super().__init__()
 

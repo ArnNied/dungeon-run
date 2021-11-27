@@ -19,6 +19,9 @@ class Prop:
     A wrapper to use for actor attribute.
     """
 
+    def __str__(self):
+        return f"{self.value.get()}"
+
     def __init__(self, val: Any):
         self.value = BaseProp(val)
 
@@ -27,6 +30,9 @@ class PropWithMax(Prop):
     """
     A wrapper to use for actor attribute that has a max value.
     """
+
+    def __str__(self):
+        return f"{self.value.get()}/{self.max_value.get()}"
 
     def __init__(
         self, starting_value: Union[int, float], max_value: Union[int, float]
@@ -44,8 +50,20 @@ class BaseActor:
     encounter_chance = Prop(0)
     health_point = PropWithMax(100, 100)
 
-    def name_get(self):
-        return self.name
+    visible_prop = (
+        {
+            "Name": "name",
+        },
+        {
+            "HP": "health_point",
+        },
+    )
 
-    def hp_get(self):
-        return self.health_point
+    def display_stat(self):
+        for row in range(len(self.visible_prop)):
+            stat_row = [
+                f"{key}: {getattr(self, val)}"
+                for key, val in self.visible_prop[row].items()
+            ]
+
+            print("\t".join(stat_row))
