@@ -1,8 +1,15 @@
 from importlib import import_module
 from random import random
+from time import sleep
 from typing import Union
 
 from dungeonrun import config
+
+
+def animate(string_):
+    for char in string_:
+        print(char, end="", flush=True)
+        sleep(0.015)
 
 
 def rng(val: float = None) -> Union[bool, float]:
