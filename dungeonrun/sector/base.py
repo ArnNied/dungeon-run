@@ -26,7 +26,19 @@ class BaseSector:
 
     def __init__(self, player):
         self.player = player
-        super().__init__()
+
+        self.before()
+        self.dispatch()
+        self.after()
+
+    def before(self):
+        pass
+
+    def after(self):
+        pass
+
+    def dispatch(self):
+        pass
 
     def execute(self) -> "BaseSector":
         """Main function to call."""
@@ -88,7 +100,7 @@ class Dialogue:
 
     dialogue = []
 
-    def __init__(self):
+    def dispatch(self):
         """Print dialogue(s) with delay before and/or after."""
 
         if self.dialogue is not None:
@@ -97,7 +109,7 @@ class Dialogue:
                 print(line["text"])
                 sleep(line.get("after", 1))
 
-        super().__init__()
+        super().dispatch()
 
 
 class MultipleHostileEncounter:
@@ -109,7 +121,7 @@ class MultipleHostileEncounter:
 
     enemies = []
 
-    def __init__(self):
+    def dispatch(self):
         enemies = self.encounter_check(self.import_enemies())
 
         for enemy in enemies:
@@ -118,7 +130,7 @@ class MultipleHostileEncounter:
             Encounter(self.player, enemy)
             print()
 
-        super().__init__()
+        super().dispatch()
 
     def import_enemies(self) -> list[BaseActor]:
         """Import enemy module from the list self.enemies."""
