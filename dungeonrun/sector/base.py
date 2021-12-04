@@ -3,6 +3,7 @@ from time import sleep
 from dungeonrun.actor.base import BaseActor
 from dungeonrun.mechanics.encounter import Encounter
 from dungeonrun.utils import (
+    animate,
     convert_to_keys,
     convert_to_readable,
     import_from_pack,
@@ -106,7 +107,7 @@ class Dialogue:
         if self.dialogue is not None:
             for line in self.dialogue:
                 sleep(line.get("before", 0))
-                print(line["text"])
+                animate(line["text"])
                 sleep(line.get("after", 1))
 
         super().dispatch()
