@@ -35,38 +35,33 @@ class PropWithMax(Prop):
         return f"{self.value.get()}/{self.max_value.get()}"
 
     def __init__(
-        self, starting_value: Union[int, float], max_value: Union[int, float]
+        self, initial_value: Union[int, float], max_value: Union[int, float]
     ):
-        super().__init__(starting_value)
+        super().__init__(initial_value)
         self.max_value = BaseProp(max_value)
 
 
 class BaseActor:
     """
-    Class to inherit for actor such as player and enemies.
+    Class to inherit for actor such as player and entities.
     """
 
     name = Prop("")
-    encounter_chance = Prop(0)
-    health_point = PropWithMax(100, 100)
 
     visible_prop = (
         {
             "Name": "name",
         },
-        {
-            "HP": "health_point",
-        },
     )
 
     def stringify_prop(self):
         rows = []
-        for i in range(len(self.visible_prop)):
-            stat_row = [
-                f"{key}: {getattr(self, val)}"
-                for key, val in self.visible_prop[i].items()
+        for props in self.visible_prop:
+            row = [
+                f"{prop_key}: {getattr(self, prop_val)}"
+                for prop_key, prop_val in props.items()
             ]
 
-            rows.append("\t".join(stat_row))
+            rows.append("\t".join(row))
 
         return "\n".join(rows)

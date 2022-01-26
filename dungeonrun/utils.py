@@ -41,12 +41,12 @@ def convert_to_readable(string: str) -> str:
     return " ".join(string.split("_")).title()
 
 
-def import_from_pack(path: str):
+def import_from_pack(pack_name: str, path: str):
     """Handles importing module and class."""
 
     *file_directory, class_name = path.split(".")
 
     return getattr(
-        import_module(f"pack.{config.PACK_NAME}.{'.'.join(file_directory)}"),
+        import_module(f"pack.{pack_name}.{'.'.join(file_directory)}"),
         class_name,
     )

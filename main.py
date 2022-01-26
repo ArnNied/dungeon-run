@@ -1,64 +1,31 @@
-import sys
-from importlib import import_module
-from os import system
+import importlib
+import inspect
+import os
 
-from dungeonrun import config as cf
-from dungeonrun.actor.base import BaseActor
+from dungeonrun.dungeonrun import DungeonRun
 
 if __name__ == "__main__":
-    try:
-        pack_config_path = f"pack.{cf.PACK_NAME}.config"
-    except (AttributeError, ValueError):
-        print(
-            f"""
-        Config error:
-        Make sure 'PACK_NAME' is configured in dungeonrun/config.py
-        """
-        )
-        sys.exit(1)
+    folders = os.listdir("./pack")
+    installed_pack = {}
 
-    try:
-        pack_config = import_module(pack_config_path)
+    for folder in folders:
+        try:
+            module = importlib.import_module(f"pack.{folder}.app")
+        except ModuleNotFoundError:
+            pass
+        else:
+            for name, cls in inspect.getmembers(module, inspect.isclass):
+                if DungeonRun in cls.__mro__ and cls is not DungeonRun:
+                    installed_pack[folder] = cls
 
-        (
-            SECTOR_BEGIN_FILE,
-            SECTOR_BEGIN_CLASS,
-        ) = pack_config.SECTOR_BEGIN.split(".")
-    except AttributeError:
-        print(
-            f"""
-        Pack config error:
-        Make sure 'SECTOR_BEGIN' is configured in pack/{cf.PACK_NAME}/config.py
-        PACK_NAME: {cf.PACK_NAME}
-        """
-        )
-        sys.exit(1)
-    except ValueError:
-        print(
-            f"""
-        Pack import error:
-        Make sure 'SECTOR_BEGIN' is configured correctly in dungeonrun/config.py. Ex: 'FILE_NAME.CLASS_NAME'
-        PACK_NAME: {cf.PACK_NAME}
-        SECTOR_BEGIN: {pack_config.SECTOR_BEGIN}
-        """
-        )
-        sys.exit(1)
-    except ModuleNotFoundError:
-        print(
-            f"""
-        Pack not found:
-        Make sure the pack is installed correctly and 'PACK_NAME' correctly configured in dungeonrun/config.py
-        PACK_NAME: {cf.PACK_NAME}
-        """
-        )
-        sys.exit(1)
-
-    system("cls")
-    player = BaseActor()
-
-    sector_path = f"pack.{cf.PACK_NAME}.sector.{SECTOR_BEGIN_FILE}"
-    sector = getattr(import_module(sector_path), SECTOR_BEGIN_CLASS)
+    print("List of installed pack:")
+    for index, pack in enumerate(installed_pack):
+        print(f"{index + 1}. {pack}")
 
     while True:
-        system("cls")
-        sector = sector(player).execute()
+        try:
+            chosen_pack = input("\nDesired pack: ")
+            installed_pack[chosen_pack]().run()
+        except KeyError:
+            print("Pack not found")
+            continue

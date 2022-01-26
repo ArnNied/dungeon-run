@@ -14,12 +14,9 @@ class HostileSector(MultipleEntityEncounter, Dialogue, BaseSector):
         }
     ]
 
-    entities = [
+    enemies = [
         "Humanoid.Elvish",
         "Humanoid.Orc",
         "Humanoid.Human",
         "Leviathan.Leviathan",
     ]
-
-    sort_by = "encounter_chance"
-    check_by = "encounter_chance"

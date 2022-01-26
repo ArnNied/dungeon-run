@@ -1,4 +1,4 @@
-from dungeonrun.actor.base import BaseActor, Prop, PropWithMax
+from dungeonrun.actor import BaseActor, Prop, PropWithMax
 
 
 class Bipedal(BaseActor):
