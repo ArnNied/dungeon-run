@@ -1,7 +1,7 @@
 from time import sleep
 
-from dungeonrun.actor import BaseActor
-from dungeonrun.encounter import Encounter
+from dungeonrun.dungeonrun import DungeonRun
+from dungeonrun.entity import BaseEntity
 from dungeonrun.utils import (
     animate,
     convert_to_keys,
@@ -13,11 +13,12 @@ from dungeonrun.utils import (
 
 class BaseSector:
     """
-    Class to inherit when creating an sector.
+    Basic sector class.
 
     Note that this class should be inherited first (leftmost) before any sector mixin used.
 
-    paths: {"sector_key": "module.class"}
+    `paths: {"sector_key": "module.class"}`
+    `path_separator: string`
     """
 
     paths = None
@@ -25,22 +26,20 @@ class BaseSector:
 
     NEXT_SECTOR = None
 
-    def __init__(self, app, player):
-        self.player = player
+    def __init__(self, app: DungeonRun) -> None:
         self.APP = app
 
         self.before()
         self.dispatch()
 
-    def before(self):
+    def before(self) -> None:
         pass
 
-    def dispatch(self):
+    def dispatch(self) -> None:
         pass
 
-    def validate_input(self, sector, user_input):
-        print(sector, user_input)
-        # pass
+    def validate_input(self, sector: str, user_input: str) -> None:
+        pass
 
     def execute(self) -> "BaseSector":
         """Main function to call."""
@@ -77,7 +76,7 @@ class BaseSector:
 
         print(f"\n{paths}")
 
-    def check_sector(self, user_input):
+    def check_sector(self, user_input: str) -> str:
         chosen_path = convert_to_keys(user_input)
 
         return self.paths.get(chosen_path, False)
@@ -93,20 +92,19 @@ class BaseSector:
     def import_next_sector(self, next_sector: str) -> "BaseSector":
         """Import the class of next sector to instantiate in main.py."""
 
-        print(next_sector)
         return import_from_pack(self.APP._PACK_NAME, f"sector.{next_sector}")
 
 
 class Dialogue:
     """
-    Class to inherit when a sector need to display dialogue(s).
+    Mixin for Sector to allow printing dialogues to the output.
 
-    dialogue: [{"text": string, "before": int|float, "after": int|float},]
+    `dialogue: ({"text": string, ["before": int | float, "after": int | float}])`
     """
 
     dialogue = []
 
-    def dispatch(self):
+    def dispatch(self) -> None:
         """Print dialogue(s) with delay before and/or after."""
 
         if self.dialogue is not None:
@@ -120,6 +118,7 @@ class Dialogue:
 
 class MultipleEntityEncounter:
     """
+
     Class to inherit when a sector will have multiple entity encounter.
 
     entities: ["module.class",]
@@ -129,29 +128,29 @@ class MultipleEntityEncounter:
     sort_by = ""
     check_by = None
 
-    def dispatch(self):
+    def dispatch(self) -> None:
         entities = self.encounter_check(self.import_entities())
 
         for entity in entities:
             entity = entity()
-            self.APP.ENCOUNTER_CLASS(self.player, entity).execute()
+            self.APP.ENCOUNTER_CLASS(self.APP.MAIN_ACTOR, entity).execute()
 
         super().dispatch()
 
-    def import_entities(self) -> list[BaseActor]:
-        """Import entity module from the list self.entities."""
+    def import_entities(self) -> list[BaseEntity]:
+        """Import entity module from the list `self.entities`."""
 
         imported_entities = [
             import_from_pack(self.APP._PACK_NAME, f"entities.{entity}")
             for entity in self.entities
         ]
 
-        # return sorted entity by encounter_chance from lowest
+        # return sorted entity by self.sort_by from lowest
         # so lowest chance entity will be checked first
         if self.sort_by:
             return sorted(
                 imported_entities,
-                key=lambda x: getattr(x, self.sort_by).value.get(),
+                key=lambda x: getattr(x, self.sort_by).get(),
             )
         else:
             return imported_entities
@@ -162,7 +161,7 @@ class MultipleEntityEncounter:
         checked_entities = [
             entity
             for entity in entities
-            if rng(getattr(entity, self.check_by).value.get())
+            if rng(getattr(entity, self.check_by).get())
         ]
 
         return checked_entities
