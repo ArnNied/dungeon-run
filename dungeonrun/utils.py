@@ -1,15 +1,14 @@
-from importlib import import_module
-from random import random
-from time import sleep
+import importlib
+import os
+import random
+import time
 from typing import Union
-
-from dungeonrun import config
 
 
 def animate(string_):
     for char in string_:
         print(char, end="", flush=True)
-        sleep(0.015)
+        time.sleep(0.015)
 
 
 def rng(val: float = None) -> Union[bool, float]:
@@ -47,6 +46,12 @@ def import_from_pack(pack_name: str, path: str):
     *file_directory, class_name = path.split(".")
 
     return getattr(
-        import_module(f"pack.{pack_name}.{'.'.join(file_directory)}"),
+        importlib.import_module(
+            f"pack.{pack_name}.{'.'.join(file_directory)}"
+        ),
         class_name,
     )
+
+
+def clear_stdout():
+    os.system("cls" if os.name == "nt" else "clear")
