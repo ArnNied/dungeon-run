@@ -15,9 +15,9 @@ def rng(val: float = None) -> Union[bool, float]:
     """Will return bool after evaluating `random() <= val` or return float from `random()`"""
 
     if val is not None:
-        return random() <= val
+        return random.random() <= val
 
-    return random()
+    return random.random()
 
 
 def convert_to_keys(string: str) -> str:
