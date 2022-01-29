@@ -40,7 +40,7 @@ class BaseSector:
         pass
 
     def validate_input(self, sector: str, user_input: str) -> None:
-        pass
+        return sector
 
     def execute(self) -> "BaseSector":
         """Main function to call."""
@@ -50,7 +50,7 @@ class BaseSector:
             self.display_available_path()
             user_input = input("> ")
             sector = self.check_sector(user_input)
-            self.validate_input(sector, user_input)
+            sector = self.validate_input(sector, user_input)
 
             self.set_next_sector(sector, user_input)
 
