@@ -1,7 +1,8 @@
-from time import sleep
+import time
 
 from dungeonrun.dungeonrun import DungeonRun
 from dungeonrun.entity import BaseEntity
+from dungeonrun.exceptions import End
 from dungeonrun.utils import (
     animate,
     convert_to_keys,
@@ -63,10 +64,10 @@ class BaseSector:
         OR if self.paths is None then it will be considered an 'ending'.
         """
 
-        if self.paths is None:
-            print("end")
-        elif type(self.paths) is str:
+        if type(self.paths) is str or isinstance(self.paths, BaseSector):
             self.next_sector = self.paths
+        elif self.paths is None:
+            raise End
 
     def display_available_path(self) -> None:
         """Output available path(s) to the terminal."""
@@ -92,7 +93,12 @@ class BaseSector:
     def import_next_sector(self, next_sector: str) -> "BaseSector":
         """Import the class of next sector to instantiate in main.py."""
 
-        return import_from_pack(self.APP._PACK_NAME, f"sector.{next_sector}")
+        if isinstance(next_sector, BaseSector):
+            return next_sector
+        else:
+            return import_from_pack(
+                self.APP._PACK_NAME, f"sector.{next_sector}"
+            )
 
 
 class Dialogue:
@@ -109,9 +115,9 @@ class Dialogue:
 
         if self.dialogue is not None:
             for line in self.dialogue:
-                sleep(line.get("before", 0))
+                time.sleep(line.get("before", 0))
                 animate(line["text"])
-                sleep(line.get("after", 1))
+                time.sleep(line.get("after", 1))
 
         super().dispatch()
 
