@@ -3,6 +3,7 @@ import os
 
 from dungeonrun.encounter import Encounter
 from dungeonrun.entity import BaseEntity
+from dungeonrun.exceptions import End
 from dungeonrun.utils import clear_stdout
 
 
@@ -14,6 +15,7 @@ class DungeonRun:
     ENCOUNTER_CLASS = Encounter
     BEGIN_CLASS = None
     MAIN_ACTOR = BaseEntity
+    END_CLASS = None
 
     def __init__(self) -> None:
         clear_stdout()
@@ -27,6 +29,10 @@ class DungeonRun:
     def run(self) -> None:
         sector = self.BEGIN_CLASS(self).execute()
 
-        while True:
-            os.system("cls")
-            sector = sector(self).execute()
+        try:
+            while True:
+                clear_stdout()
+                sector = sector(self).execute()
+        except End:
+            if self.END_CLASS:
+                self.END_CLASS(self).execute()

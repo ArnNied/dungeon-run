@@ -23,9 +23,11 @@ if __name__ == "__main__":
         print(f"{index + 1}. {pack}")
 
     while True:
-        try:
-            chosen_pack = input("\nDesired pack: ")
-            installed_pack[chosen_pack]().run()
-        except KeyError:
+        chosen_pack = input("\nDesired pack: ")
+
+        if chosen_pack not in installed_pack:
             print("Pack not found")
             continue
+        else:
+            break
+    installed_pack[chosen_pack]().run()
