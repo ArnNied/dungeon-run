@@ -65,7 +65,7 @@ class BaseSector:
         """
 
         if type(self.paths) is str or isinstance(self.paths, BaseSector):
-            self.next_sector = self.paths
+            self.NEXT_SECTOR = self.paths
         elif self.paths is None:
             raise End
 
@@ -116,7 +116,7 @@ class Dialogue:
         if self.dialogue is not None:
             for line in self.dialogue:
                 time.sleep(line.get("before", 0))
-                animate(line["text"])
+                animate(f"{line['text']}\n")
                 time.sleep(line.get("after", 1))
 
         super().dispatch()
