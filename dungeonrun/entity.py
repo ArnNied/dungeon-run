@@ -22,6 +22,6 @@ class BaseEntity:
                 for prop_key, prop_val in props.items()
             ]
 
-            rows.append("\t".join(row))
+            rows.append("    ".join(row))
 
         return "\n".join(rows)
