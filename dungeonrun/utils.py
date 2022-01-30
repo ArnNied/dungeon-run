@@ -5,10 +5,10 @@ import time
 from typing import Union
 
 
-def animate(string_):
+def animate(string_: str, delay: float = 0.014) -> None:
     for char in string_:
         print(char, end="", flush=True)
-        time.sleep(0.015)
+        time.sleep(delay)
 
 
 def rng(val: float = None) -> Union[bool, float]:

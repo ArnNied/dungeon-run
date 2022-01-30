@@ -1,4 +1,5 @@
 import time
+from typing import Union
 
 from dungeonrun.dungeonrun import DungeonRun
 from dungeonrun.entity import BaseEntity
@@ -102,6 +103,25 @@ class BaseSector:
 
 
 class Dialogue:
+    def __init__(
+        self,
+        dialogue: str,
+        before: Union[int, float] = 0,
+        after: Union[int, float] = 1,
+        speed: Union[int, float] = 0.014,
+    ) -> None:
+        self.dialogue = dialogue
+        self.before = before
+        self.after = after
+        self.speed = speed
+
+    def display(self) -> None:
+        time.sleep(self.before)
+        animate(f"{self.dialogue}", self.speed)
+        time.sleep(self.after)
+
+
+class DialogueMixin:
     """
     Mixin for Sector to allow printing dialogues to the output.
 
@@ -115,9 +135,7 @@ class Dialogue:
 
         if self.dialogue is not None:
             for line in self.dialogue:
-                time.sleep(line.get("before", 0))
-                animate(f"{line['text']}\n")
-                time.sleep(line.get("after", 1))
+                line.display()
 
         super().dispatch()
 
