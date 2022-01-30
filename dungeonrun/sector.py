@@ -1,5 +1,5 @@
 import time
-from typing import Union
+from typing import Optional, Union
 
 from dungeonrun.dungeonrun import DungeonRun
 from dungeonrun.entity import BaseEntity
@@ -110,19 +110,24 @@ class Dialogue:
     def __init__(
         self,
         dialogue: str,
-        before: Union[int, float] = 0,
-        after: Union[int, float] = 1,
-        speed: Union[int, float] = 0.014,
+        before: Optional[Union[int, float]] = None,
+        after: Optional[Union[int, float]] = None,
+        speed: Optional[Union[int, float]] = None,
     ) -> None:
         self.dialogue = dialogue
         self.before = before
         self.after = after
         self.speed = speed
 
-    def display(self) -> None:
-        time.sleep(self.before)
-        animate(f"{self.dialogue}", self.speed)
-        time.sleep(self.after)
+    def display(
+        self,
+        before: Union[int, float] = None,
+        after: Union[int, float] = None,
+        speed: Union[int, float] = None,
+    ) -> None:
+        time.sleep(self.before or before or 0)
+        animate(f"{self.dialogue}", self.speed or speed or 0)
+        time.sleep(self.after or after or 0)
 
 
 class DialogueMixin:
@@ -133,13 +138,20 @@ class DialogueMixin:
     """
 
     dialogue = []
+    dialogue_before = 0
+    dialogue_after = 1
+    dialogue_speed = 0.014
 
     def dispatch(self) -> None:
         """Print dialogue(s) with delay before and/or after."""
 
         if self.dialogue is not None:
             for line in self.dialogue:
-                line.display()
+                line.display(
+                    self.dialogue_before,
+                    self.dialogue_after,
+                    self.dialogue_speed,
+                )
 
         super().dispatch()
 
