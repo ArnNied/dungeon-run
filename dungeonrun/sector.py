@@ -65,10 +65,14 @@ class BaseSector:
         OR if self.paths is None then it will be considered an 'ending'.
         """
 
-        if type(self.paths) is str or isinstance(self.paths, BaseSector):
-            self.NEXT_SECTOR = self.paths
-        elif self.paths is None:
+        if self.paths is None:
             raise End
+        elif (
+            type(self.paths) is not dict
+            and BaseSector in self.paths.__mro__
+            or type(self.paths) is str
+        ):
+            self.NEXT_SECTOR = self.paths
 
     def display_available_path(self) -> None:
         """Output available path(s) to the terminal."""
@@ -94,12 +98,12 @@ class BaseSector:
     def import_next_sector(self, next_sector: str) -> "BaseSector":
         """Import the class of next sector to instantiate in main.py."""
 
-        if isinstance(next_sector, BaseSector):
-            return next_sector
-        else:
+        if type(next_sector) is str:
             return import_from_pack(
                 self.APP._PACK_NAME, f"sector.{next_sector}"
             )
+        else:
+            return next_sector
 
 
 class Dialogue:
