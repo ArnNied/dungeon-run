@@ -50,8 +50,11 @@ class NumberProp(StrictProp):
     Prop with strict `int | float` value type.
     """
 
-    def __init__(self, val: Union[int, float]):
+    def __init__(
+        self, val: Union[int, float], underflow_value: Union[int, float] = 0
+    ) -> None:
         super().__init__((int, float), val)
+        self.underflow = StrictProp((int, float), underflow_value)
 
     def update(self, val: Union[int, float]) -> Union[int, float]:
         old_val = self.get()
@@ -79,6 +82,12 @@ class NumberProp(StrictProp):
 
         return value_difference
 
+    def is_underflow(self):
+        return self.get() < self.underflow.get()
+
+    def fix_underflow(self) -> Union[int, float]:
+        return self.update(self.underflow.get())
+
 
 class PropWithMax(NumberProp):
     """
@@ -92,9 +101,11 @@ class PropWithMax(NumberProp):
         self,
         initial_value: Union[int, float],
         max_value: Union[int, float],
+        underflow_value: Union[int, float] = 0,
+        max_value_underflow_value: Union[int, float] = 0,
     ) -> None:
-        super().__init__(initial_value)
-        self.max_value = NumberProp(max_value)
+        super().__init__(initial_value, underflow_value)
+        self.max_value = NumberProp(max_value, max_value_underflow_value)
 
     def current_percentage(self) -> float:
         return self.get() / self.max_value.get()
@@ -102,11 +113,5 @@ class PropWithMax(NumberProp):
     def is_overflow(self) -> bool:
         return self.get() > self.max_value.get()
 
-    def is_underflow(self) -> bool:
-        return self.get() < 0
-
     def fix_overflow(self) -> Union[int, float]:
         return self.update(self.max_value.get())
-
-    def fix_underflow(self) -> Union[int, float]:
-        return self.update(0)
