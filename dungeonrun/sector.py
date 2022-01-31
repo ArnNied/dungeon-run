@@ -125,9 +125,12 @@ class Dialogue:
         after: Union[int, float] = None,
         speed: Union[int, float] = None,
     ) -> None:
-        time.sleep(self.before or before or 0)
-        animate(f"{self.dialogue}", self.speed or speed or 0)
-        time.sleep(self.after or after or 0)
+        time.sleep(self.before if self.before is not None else before or 0)
+        animate(
+            f"{self.dialogue}",
+            self.speed if self.speed is not None else speed or 0,
+        )
+        time.sleep(self.after if self.after is not None else after or 0)
 
 
 class DialogueMixin:
