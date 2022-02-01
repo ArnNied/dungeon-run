@@ -13,8 +13,8 @@ class Apparel(BaseEntity):
             "Name": "name",
         },
         {
-            "Damage Reduction": "damage_reduction",
-            "Parry Rate": "parry_chance",
+            "Base Damage Reduction": "damage_reduction",
+            "Base Parry Rate": "parry_chance",
         },
     ]
 
@@ -92,7 +92,7 @@ class HeavyTwo(TierTwoApparel):
     damage_reduction = NumberProp(0.15)
 
 
-class HeavyOne(TierOneApparel):
+class HeavyThree(TierOneApparel):
     name = Prop("Daedric Armor")
 
     damage_reduction = NumberProp(0.2)

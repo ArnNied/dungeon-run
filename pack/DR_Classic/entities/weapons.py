@@ -18,8 +18,8 @@ class Weapon(BaseEntity):
         },
         {
             "Base Attack": "attack",
-            "Hit Chance": "hit_chance",
-            "Crit Chance": "crit_chance",
+            "Base Hit Chance": "hit_chance",
+            "Base Crit Chance": "crit_chance",
         },
     ]
 
@@ -59,22 +59,40 @@ class Fist(Weapon):
 
 
 # WEAPON TIERS
-class TierOneWeapon(Weapon):
+class TierOneWeapon:
     drop_chance = NumberProp(0.6)
 
 
-class TierTwoWeapon(Weapon):
+class TierTwoWeapon:
     drop_chance = NumberProp(0.5)
 
 
-class TierThreeWeapon(Weapon):
+class TierThreeWeapon:
     drop_chance = NumberProp(0.4)
 
 
 ##########
 # SWORDS #
 ##########
-class SwordOne(TierOneWeapon):
+class Sword(Weapon):
+    def calculate_attack(self, player):
+        return RandomizedNumber(
+            player.strength.get() * 3 + self.attack.get(),
+            player.strength.get() * 3 + self.attack.max_value.get(),
+        )
+
+    def calculate_hit_chance(self, player):
+        return NumberProp(
+            player.agility.get() * 3 / 100 + self.hit_chance.get(),
+        )
+
+    def calculate_crit_chance(self, player):
+        return NumberProp(
+            player.misc.get() * 2 / 100 + self.crit_chance.get(),
+        )
+
+
+class SwordOne(TierOneWeapon, Sword):
     name = Prop("Iron Sword")
 
     attack = RandomizedNumber(7, 13)
@@ -82,7 +100,7 @@ class SwordOne(TierOneWeapon):
     crit_chance = NumberProp(0.04)
 
 
-class SwordTwo(TierTwoWeapon):
+class SwordTwo(TierTwoWeapon, Sword):
     name = Prop("Steel Sword")
 
     attack = RandomizedNumber(14, 20)
@@ -90,7 +108,7 @@ class SwordTwo(TierTwoWeapon):
     crit_chance = NumberProp(0.08)
 
 
-class SwordThree(TierThreeWeapon):
+class SwordThree(TierThreeWeapon, Sword):
     name = Prop("Daedric Sword")
 
     attack = RandomizedNumber(22, 29)
@@ -101,7 +119,25 @@ class SwordThree(TierThreeWeapon):
 ########
 # Axes #
 ########
-class AxeOne(TierOneWeapon):
+class Axe(Weapon):
+    def calculate_attack(self, player):
+        return RandomizedNumber(
+            player.strength.get() * 4 + self.attack.get(),
+            player.strength.get() * 4 + self.attack.max_value.get(),
+        )
+
+    def calculate_hit_chance(self, player):
+        return NumberProp(
+            player.agility.get() * 1 / 100 + self.hit_chance.get(),
+        )
+
+    def calculate_crit_chance(self, player):
+        return NumberProp(
+            player.misc.get() * 2 / 100 + self.crit_chance.get(),
+        )
+
+
+class AxeOne(Axe, TierOneWeapon):
     name = Prop("Iron Axe")
 
     attack = RandomizedNumber(12, 23)
@@ -109,7 +145,7 @@ class AxeOne(TierOneWeapon):
     crit_chance = NumberProp(0.06)
 
 
-class AxeTwo(TierTwoWeapon):
+class AxeTwo(Axe, TierTwoWeapon):
     name = Prop("Steel Axe")
 
     attack = RandomizedNumber(18, 39)
@@ -117,7 +153,7 @@ class AxeTwo(TierTwoWeapon):
     crit_chance = NumberProp(0.08)
 
 
-class AxeOne(TierOneWeapon):
+class AxeOne(Axe, TierOneWeapon):
     name = Prop("Daedric Axe")
 
     attack = RandomizedNumber(24, 45)
@@ -128,7 +164,25 @@ class AxeOne(TierOneWeapon):
 ############
 # Rappiers #
 ############
-class RappierOne(TierOneWeapon):
+class Rapier(Weapon):
+    def calculate_attack(self, player):
+        return RandomizedNumber(
+            player.strength.get() * 2 + self.attack.get(),
+            player.strength.get() * 2 + self.attack.max_value.get(),
+        )
+
+    def calculate_hit_chance(self, player):
+        return NumberProp(
+            player.agility.get() * 2 / 100 + self.hit_chance.get(),
+        )
+
+    def calculate_crit_chance(self, player):
+        return NumberProp(
+            player.misc.get() * 3 / 100 + self.crit_chance.get(),
+        )
+
+
+class RappierOne(Rapier, TierOneWeapon):
     name = Prop("Iron Rappier")
 
     attack = RandomizedNumber(7, 10)
@@ -136,7 +190,7 @@ class RappierOne(TierOneWeapon):
     crit_chance = NumberProp(0.03)
 
 
-class RappierTwo(TierTwoWeapon):
+class RappierTwo(Rapier, TierTwoWeapon):
     name = Prop("Steel Rappier")
 
     attack = RandomizedNumber(12, 15)
@@ -144,7 +198,7 @@ class RappierTwo(TierTwoWeapon):
     crit_chance = NumberProp(0.09)
 
 
-class RappierOne(TierOneWeapon):
+class RappierOne(Rapier, TierOneWeapon):
     name = Prop("Daedric Rappier")
 
     attack = RandomizedNumber(17, 21)

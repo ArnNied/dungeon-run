@@ -35,17 +35,20 @@ class Enemy(BaseEntity):
 
     def __init__(self):
         super().__init__()
-        self.health_point = NumberProp(
-            random.randint(
-                self.health_point.get(), self.health_point.max_value.get()
-            )
+        hp = random.randint(
+            self.health_point.get(), self.health_point.max_value.get()
         )
+
+        self.health_point = PropWithMax(hp, hp)
         self.experience_drop = NumberProp(
             random.randint(
                 self.experience_drop.get(),
                 self.experience_drop.max_value.get(),
             )
         )
+
+    def calculate_attack(self):
+        return random.randint(self.attack.get(), self.attack.max_value.get())
 
 
 class BlueSlime(Enemy):
@@ -84,7 +87,8 @@ class Spider(Enemy):
     evade_chance = NumberProp(0)
     experience_drop = RandomizedNumber(5, 9)
 
-    encounter_chance = NumberProp(0.25)
+    # NOTE: TEMPORARY FOR DEMO
+    encounter_chance = NumberProp(1)
 
 
 class Goblin(Enemy):
@@ -92,9 +96,9 @@ class Goblin(Enemy):
 
     health_point = PropWithMax(20, 30)
     attack = RandomizedNumber(4, 7)
-    hit_chance = NumberProp(0.75)
-    crit_chance = NumberProp(0.05)
-    evade_chance = NumberProp(0)
-    experience_drop = RandomizedNumber(5, 9)
+    hit_chance = NumberProp(0.7)
+    crit_chance = NumberProp(0.15)
+    evade_chance = NumberProp(0.05)
+    experience_drop = RandomizedNumber(7, 11)
 
-    encounter_chance = NumberProp(0.25)
+    encounter_chance = NumberProp(0.12)
