@@ -1,4 +1,5 @@
 import time
+from random import randrange
 from typing import Optional, Union
 
 from dungeonrun.dungeonrun import DungeonRun
@@ -13,18 +14,26 @@ from dungeonrun.utils import (
 )
 
 
+class Route:
+    def __init__(
+        self, sector: Union["BaseSector", str], key: str = "", text=None
+    ):
+        self.key = convert_to_keys(key)
+        self.sector = sector
+        self.text = (
+            text if text is not None else convert_to_readable(self.key)
+        )
+
+
 class BaseSector:
     """
     Basic sector class.
 
-    Note that this class should be inherited first (leftmost) before any sector mixin used.
-
-    `paths: {"sector_key": "module.class"}`
-    `path_separator: string`
+    Note that this class should be inherited last (rightmost) before any sector mixin used.
     """
 
-    paths = None
-    path_separator = " :: "
+    route = None
+    route_separator = " :: "
 
     NEXT_SECTOR = None
 
@@ -40,70 +49,74 @@ class BaseSector:
     def dispatch(self) -> None:
         pass
 
-    def validate_input(self, sector: str, user_input: str) -> None:
-        return sector
+    def validate_input(self, route: str, user_input: str) -> None:
+        return route
 
     def execute(self) -> "BaseSector":
         """Main function to call."""
 
-        self.paths_check()
-        while self.NEXT_SECTOR == None:
-            self.display_available_path()
+        self.route_check()
+        while self.NEXT_SECTOR is None:
+            self.display_available_route()
             user_input = input("> ")
-            sector = self.check_sector(user_input)
-            sector = self.validate_input(sector, user_input)
+            route = self.check_route(user_input)
+            route = self.validate_input(route, user_input)
 
-            self.set_next_sector(sector, user_input)
+            self.set_next_sector(route, user_input)
 
-        imported_sector = self.import_next_sector(self.NEXT_SECTOR)
+        imported_sector = self.import_next_sector()
 
         return imported_sector
 
-    def paths_check(self) -> None:
+    def route_check(self) -> None:
         """
-        Check if self.paths is a string pointing to a sector.
-        OR if self.paths is None then it will be considered an 'ending'.
+        Check if self.route is a string pointing to a sector.
+        OR if self.route is None then it will be considered an 'ending'.
         """
 
-        if self.paths is None:
+        if self.route is None:
             raise End
-        elif (
-            type(self.paths) is not dict
-            and BaseSector in self.paths.__mro__
-            or type(self.paths) is str
-        ):
-            self.NEXT_SECTOR = self.paths
+        elif isinstance(self.route, Route):
+            self.NEXT_SECTOR = self.route
 
-    def display_available_path(self) -> None:
-        """Output available path(s) to the terminal."""
+    def display_available_route(self) -> None:
+        """Output available route(s) to the terminal."""
 
-        paths = [convert_to_readable(path) for path in self.paths]
-        paths = self.path_separator.join(paths)
+        route = [route.text for route in self.route]
+        route = self.route_separator.join(route)
 
-        print(f"\n{paths}")
+        print(f"\n{route}")
 
-    def check_sector(self, user_input: str) -> str:
-        chosen_path = convert_to_keys(user_input)
+    def check_route(self, user_input: str) -> str:
+        chosen_route = convert_to_keys(user_input)
 
-        return self.paths.get(chosen_path, False)
+        try:
+            route = [
+                route for route in self.route if route.key == chosen_route
+            ][0]
+        except IndexError:
+            route = False
 
-    def set_next_sector(self, sector, user_input) -> None:
+        return route
+
+    def set_next_sector(
+        self, route: Union[Route, str], user_input: str
+    ) -> None:
         """Set self.next_sector for importing and executing."""
 
-        if sector:
-            self.NEXT_SECTOR = sector
+        if route:
+            self.NEXT_SECTOR = route
         else:
-            print(f"Path {user_input} doesn't exist")
+            print(f"Route {user_input} does not exist")
 
-    def import_next_sector(self, next_sector: str) -> "BaseSector":
+    def import_next_sector(self) -> "BaseSector":
         """Import the class of next sector to instantiate in main.py."""
 
-        if type(next_sector) is str:
-            return import_from_pack(
-                self.APP._PACK_NAME, f"sector.{next_sector}"
-            )
+        sector = self.NEXT_SECTOR.sector
+        if type(sector) is str:
+            return import_from_pack(self.APP._PACK_NAME, f"sector.{sector}")
         else:
-            return next_sector
+            return sector
 
 
 class Dialogue:
@@ -175,8 +188,7 @@ class MultipleEntityEncounter:
         entities = self.encounter_check(self.import_entities())
 
         for entity in entities:
-            entity = entity()
-            self.APP.ENCOUNTER_CLASS(self.APP.MAIN_ACTOR, entity).execute()
+            self.APP.ENCOUNTER_CLASS(self.APP.MAIN_ACTOR, entity()).flow()
 
         super().dispatch()
 
@@ -208,3 +220,16 @@ class MultipleEntityEncounter:
         ]
 
         return checked_entities
+
+
+class SingleEntityEncounter(MultipleEntityEncounter):
+    def encounter_check(
+        self, entities: list[Union[BaseEntity, str]]
+    ) -> list[str]:
+        checked_entities = super().encounter_check(entities)
+
+        return (
+            [checked_entities[randrange(len(checked_entities))]]
+            if checked_entities
+            else []
+        )
