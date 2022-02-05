@@ -1,13 +1,13 @@
 import time
 
-from dungeonrun.sector import BaseSector
+from dungeonrun.sector import BaseSector, Route
 
 
 class MainMenu(BaseSector):
-    paths = {
-        "play": "start.AllocateSTR",
-        "quit": "start.QuitGame",
-    }
+    route = [
+        Route("start.AllocateSTR", "play"),
+        Route("start.QuitGame", "quit"),
+    ]
 
     def before(self):
         print(
@@ -36,10 +36,13 @@ class AllocateSTR(BaseSector):
         self.APP.starting_points = 8
 
     @property
-    def paths(self):
-        return {
-            f"Enter a number between 0-{self.APP.starting_points} for your STR: ": False
-        }
+    def route(self):
+        return [
+            Route(
+                "",
+                text=f"Enter a number between 0-{self.APP.starting_points} for your STR:",
+            )
+        ]
 
     def validate_input(self, sector: str, user_input: str) -> None:
         try:
@@ -47,7 +50,7 @@ class AllocateSTR(BaseSector):
             if 0 <= user_input <= self.APP.starting_points:
                 self.APP.MAIN_ACTOR.strength.update(user_input)
                 self.APP.starting_points -= user_input
-                return "start.AllocateAGI"
+                return Route("start.AllocateAGI")
 
         except ValueError:
             pass
@@ -55,7 +58,7 @@ class AllocateSTR(BaseSector):
         print("Error: Invalid input")
         time.sleep(1)
 
-        return "start.AllocateSTR"
+        return Route("start.AllocateSTR")
 
     def execute(self):
         print(
@@ -73,10 +76,13 @@ class AllocateSTR(BaseSector):
 
 class AllocateAGI(BaseSector):
     @property
-    def paths(self):
-        return {
-            f"Enter a number between 0-{self.APP.starting_points} for your AGI: ": False
-        }
+    def route(self):
+        return [
+            Route(
+                "",
+                f"Enter a number between 0-{self.APP.starting_points} for your AGI:",
+            )
+        ]
 
     def validate_input(self, sector: str, user_input: str) -> None:
         try:
@@ -84,7 +90,7 @@ class AllocateAGI(BaseSector):
             if 0 <= user_input <= self.APP.starting_points:
                 self.APP.MAIN_ACTOR.agility.update(user_input)
                 self.APP.starting_points -= user_input
-                return "start.AllocateMISC"
+                return Route("start.AllocateMISC")
 
         except ValueError:
             pass
@@ -92,7 +98,7 @@ class AllocateAGI(BaseSector):
         print("Error: Invalid input")
         time.sleep(1)
 
-        return "start.AllocateAGI"
+        return Route("start.AllocateAGI")
 
     def execute(self):
         print(
@@ -108,10 +114,13 @@ class AllocateAGI(BaseSector):
 
 class AllocateMISC(BaseSector):
     @property
-    def paths(self):
-        return {
-            f"Enter a number between 0-{self.APP.starting_points} for your MISC: ": False
-        }
+    def route(self):
+        return [
+            Route(
+                "",
+                f"Enter a number between 0-{self.APP.starting_points} for your MISC:",
+            )
+        ]
 
     def validate_input(self, sector: str, user_input: str) -> None:
         try:
@@ -119,7 +128,7 @@ class AllocateMISC(BaseSector):
             if 0 <= user_input <= self.APP.starting_points:
                 self.APP.MAIN_ACTOR.misc.update(user_input)
                 self.APP.starting_points -= user_input
-                return "start.Confirmation"
+                return Route("start.Confirmation")
 
         except ValueError:
             pass
@@ -127,7 +136,7 @@ class AllocateMISC(BaseSector):
         print("Error: Invalid input")
         time.sleep(1)
 
-        return "start.AllocateMISC"
+        return Route("start.AllocateMISC")
 
     def execute(self):
         print(
@@ -144,13 +153,10 @@ class AllocateMISC(BaseSector):
 
 
 class Confirmation(BaseSector):
-    paths = {
-        "confirm": "rooms.Intro",
-        "restart": "start.AllocateSTR",
-    }
-
-    def __init__(self, app):
-        super().__init__(app)
+    route = [
+        Route("rooms.Intro", "confirm"),
+        Route("start.AllocateSTR", "restart"),
+    ]
 
     def execute(self):
         if self.APP.starting_points:
