@@ -155,8 +155,8 @@ class DialogueMixin:
 
     dialogue = []
     dialogue_before = 0
-    dialogue_after = 1
-    dialogue_speed = 0.014
+    dialogue_after = 0
+    dialogue_speed = 0
 
     def dispatch(self) -> None:
         """Print dialogue(s) with delay before and/or after."""
