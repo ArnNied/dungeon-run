@@ -11,6 +11,63 @@ from pack.DR_Classic.entities.enemies import Enemy
 from pack.DR_Classic.entities.player import Player
 
 
+class PlayerEvent:
+    def level_up(self, player: Player):
+        clear_stdout()
+
+        print("Level up")
+        player.level.add(1)
+
+        # INCREASE HP
+        print("Max HP increased by 10")
+        print("HP refilled")
+        player.health_point.max_value.add(10)
+        player.health_point.update(player.health_point.max_value.get())
+
+        # INCREASE EXP REQUIRED
+        player.experience.subtract(player.experience.max_value.get())
+        player.experience.max_value.add(10)
+
+        if (
+            player.strength.get() < player.strength.max_value.get()
+            or player.agility.get() < player.agility.max_value.get()
+            or player.misc.get() < player.misc.max_value.get()
+        ):
+            print("You received an attribute point")
+            self.allocate_point(player)
+        else:
+            print("Max attribute reached!")
+
+        time.sleep(1)
+
+    def allocate_point(self, player: Player):
+        while True:
+            time.sleep(1)
+
+            # clear_stdout()
+            print(
+                f"\nStrength {player.strength}    Agility: {player.agility}    Misc: {player.misc}",
+                end="\n\n",
+            )
+
+            attributes = ["strength", "agility", "misc"]
+            allowed_action = []
+
+            for attribute in attributes:
+                attr = getattr(player, attribute)
+                if attr.get() < attr.max_value.get():
+                    allowed_action.append(attribute)
+
+            print(" :: ".join([action.upper() for action in allowed_action]))
+            player_choice = input("> ").lower()
+
+            if player_choice in allowed_action:
+                getattr(player, player_choice).add(1)
+                break
+            else:
+                print("Invalid input")
+
+
 class BattleSequence(Encounter):
     def __init__(self, main_actor: Player, other: Enemy):
         super().__init__(main_actor, other)
@@ -25,6 +82,15 @@ class BattleSequence(Encounter):
 
     def before(self):
         print(f"You have encountered {self.other.name.get()}")
+
+    def after(self):
+        time.sleep(1)
+        self.main_actor.experience.add(10000)
+        while (
+            self.main_actor.experience.get()
+            >= self.main_actor.experience.max_value.get()
+        ):
+            PlayerEvent().level_up(self.main_actor)
 
     def execute(self):
         try:
@@ -48,7 +114,8 @@ class BattleSequence(Encounter):
             print(f"{self.other.name.get()} has been killed")
         except PlayerEscape:
             print("You have succesfully escaped")
-            time.sleep(2)
+
+        time.sleep(2)
 
     def player_action(self):
         repeat = True
@@ -98,7 +165,7 @@ class BattleSequence(Encounter):
     def attack(self):
         if rng(self.main_actor.hit_chance.get()):
             if rng(self.other.evade_chance.get()):
-                print(f"{self.other} evaded")
+                print(f"{self.other.name.get()} evaded")
             else:
                 damage = self.main_actor.calculate_attack()
 
