@@ -1,9 +1,15 @@
-from dungeonrun.sector import BaseSector, Dialogue, DialogueMixin, Route
+from dungeonrun.sector import BaseSector, Dialogue, Route
 from pack.DR_Classic.core.sector import (
+    DialogueMixin,
     MultipleEntityEncounter,
     SingleEntityEncounter,
 )
-from pack.DR_Classic.entities.enemies import Rat
+from pack.DR_Classic.entities.enemies import (
+    Boss,
+    Minotaur,
+    Rat,
+    StoneGargoyle,
+)
 
 
 class Intro(DialogueMixin, BaseSector):
@@ -17,7 +23,7 @@ class Intro(DialogueMixin, BaseSector):
     ]
 
     def execute(self) -> "BaseSector":
-        self.APP.ENCOUNTER_CLASS(self.APP.MAIN_ACTOR, Rat()).execute()
+        self.APP.ENCOUNTER_CLASS(self.APP.MAIN_ACTOR, Rat()).flow()
 
         return super().execute()
 
