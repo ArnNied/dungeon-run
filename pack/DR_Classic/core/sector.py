@@ -1,4 +1,8 @@
-from dungeonrun.sector import MultipleEntityEncounter, SingleEntityEncounter
+from dungeonrun.sector import (
+    DialogueMixin,
+    MultipleEntityEncounter,
+    SingleEntityEncounter,
+)
 
 
 class CustomMixin:
@@ -12,3 +16,8 @@ class MultipleEntityEncounter(CustomMixin, MultipleEntityEncounter):
 
 class SingleEntityEncounter(CustomMixin, SingleEntityEncounter):
     pass
+
+
+class DialogueMixin(DialogueMixin):
+    dialogue_after = 1
+    dialogue_speed = 0.014
