@@ -80,7 +80,7 @@ class AllocateAGI(BaseSector):
         return [
             Route(
                 "",
-                f"Enter a number between 0-{self.APP.starting_points} for your AGI:",
+                text=f"Enter a number between 0-{self.APP.starting_points} for your AGI:",
             )
         ]
 
@@ -118,7 +118,7 @@ class AllocateMISC(BaseSector):
         return [
             Route(
                 "",
-                f"Enter a number between 0-{self.APP.starting_points} for your MISC:",
+                text=f"Enter a number between 0-{self.APP.starting_points} for your MISC:",
             )
         ]
 

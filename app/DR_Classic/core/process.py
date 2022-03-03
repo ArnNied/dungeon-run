@@ -1,14 +1,10 @@
 import time
 
-from dungeonrun.encounter import Encounter
+from app.DR_Classic.core.exceptions import EnemyDead, PlayerDead, PlayerEscape
+from app.DR_Classic.entities.enemies import Enemy
+from app.DR_Classic.entities.player import Player
+from dungeonrun.process import Process
 from dungeonrun.utils import clear_stdout, rng
-from pack.DR_Classic.core.exceptions import (
-    EnemyDead,
-    PlayerDead,
-    PlayerEscape,
-)
-from pack.DR_Classic.entities.enemies import Enemy
-from pack.DR_Classic.entities.player import Player
 
 
 class PlayerEvent:
@@ -46,7 +42,7 @@ class PlayerEvent:
 
             # clear_stdout()
             print(
-                f"\nStrength {player.strength}    Agility: {player.agility}    Misc: {player.misc}",
+                f"\nStrength: {player.strength}    Agility: {player.agility}    Misc: {player.misc}",
                 end="\n\n",
             )
 
@@ -68,9 +64,9 @@ class PlayerEvent:
                 print("Invalid input")
 
 
-class BattleSequence(Encounter):
+class BattleSequence(Process):
     def __init__(self, main_actor: Player, other: Enemy):
-        super().__init__(main_actor, other)
+        super().__init__(main_actor=main_actor, other=other)
         self.cycle = 0
 
     def display(self):
@@ -85,7 +81,7 @@ class BattleSequence(Encounter):
 
     def after(self):
         time.sleep(1)
-        self.main_actor.experience.add(10000)
+        self.main_actor.experience.add(100)
         while (
             self.main_actor.experience.get()
             >= self.main_actor.experience.max_value.get()

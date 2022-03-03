@@ -1,14 +1,14 @@
 from dungeonrun.entity import BaseEntity
 
 
-class Encounter:
+class Process:
     """
-    Basic encounter class.
+    Basic process class.
     """
 
-    def __init__(self, main_actor: BaseEntity, other: BaseEntity) -> None:
-        self.main_actor = main_actor
-        self.other = other
+    def __init__(self, **kwargs) -> None:
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     def flow(self) -> None:
         self.before()

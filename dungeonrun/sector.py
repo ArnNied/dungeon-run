@@ -9,20 +9,9 @@ from dungeonrun.utils import (
     animate,
     convert_to_keys,
     convert_to_readable,
-    import_from_pack,
+    import_from_app,
     rng,
 )
-
-
-class Route:
-    def __init__(
-        self, sector: Union["BaseSector", str], key: str = "", text=None
-    ):
-        self.key = convert_to_keys(key)
-        self.sector = sector
-        self.text = (
-            text if text is not None else convert_to_readable(self.key)
-        )
 
 
 class BaseSector:
@@ -100,7 +89,7 @@ class BaseSector:
         return route
 
     def set_next_sector(
-        self, route: Union[Route, str], user_input: str
+        self, route: Union["Route", str], user_input: str
     ) -> None:
         """Set self.next_sector for importing and executing."""
 
@@ -114,9 +103,20 @@ class BaseSector:
 
         sector = self.NEXT_SECTOR.sector
         if type(sector) is str:
-            return import_from_pack(self.APP._PACK_NAME, f"sector.{sector}")
+            return import_from_app(self.APP._APP_NAME, f"sector.{sector}")
         else:
             return sector
+
+
+class Route:
+    def __init__(
+        self, sector: Union["BaseSector", str], key: str = "", text=None
+    ):
+        self.key = convert_to_keys(key)
+        self.sector = sector
+        self.text = (
+            text if text is not None else convert_to_readable(self.key)
+        )
 
 
 class Dialogue:
@@ -172,10 +172,10 @@ class DialogueMixin:
         super().dispatch()
 
 
-class MultipleEntityEncounter:
+class MultipleEntityProcess:
     """
 
-    Class to inherit when a sector will have multiple entity encounter.
+    Class to inherit when a sector will have multiple entity process.
 
     entities: ["module.class",]
     """
@@ -185,7 +185,7 @@ class MultipleEntityEncounter:
     check_by = None
 
     def dispatch(self) -> None:
-        entities = self.encounter_check(self.import_entities())
+        entities = self.process_check(self.import_entities())
 
         for entity in entities:
             self.APP.ENCOUNTER_CLASS(self.APP.MAIN_ACTOR, entity()).flow()
@@ -196,7 +196,7 @@ class MultipleEntityEncounter:
         """Import entity module from the list `self.entities`."""
 
         imported_entities = [
-            import_from_pack(self.APP._PACK_NAME, f"entities.{entity}")
+            import_from_app(self.APP._APP_NAME, f"entities.{entity}")
             for entity in self.entities
         ]
 
@@ -210,7 +210,7 @@ class MultipleEntityEncounter:
         else:
             return imported_entities
 
-    def encounter_check(self, entities: list[str]) -> list[str]:
+    def process_check(self, entities: list[str]) -> list[str]:
         """Return entities after being rng checked."""
 
         checked_entities = [
@@ -222,11 +222,11 @@ class MultipleEntityEncounter:
         return checked_entities
 
 
-class SingleEntityEncounter(MultipleEntityEncounter):
-    def encounter_check(
+class SingleEntityProcess(MultipleEntityProcess):
+    def process_check(
         self, entities: list[Union[BaseEntity, str]]
     ) -> list[str]:
-        checked_entities = super().encounter_check(entities)
+        checked_entities = super().process_check(entities)
 
         return (
             [checked_entities[randrange(len(checked_entities))]]

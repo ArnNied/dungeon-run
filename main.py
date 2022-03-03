@@ -5,29 +5,29 @@ import os
 from dungeonrun.dungeonrun import DungeonRun
 
 if __name__ == "__main__":
-    folders = os.listdir("./pack")
-    installed_pack = {}
+    folders = os.listdir("./app")
+    installed_app = {}
 
     for folder in folders:
         try:
-            module = importlib.import_module(f"pack.{folder}.app")
+            module = importlib.import_module(f"app.{folder}.app")
         except ModuleNotFoundError:
             pass
         else:
             for name, cls in inspect.getmembers(module, inspect.isclass):
                 if DungeonRun in cls.__mro__ and cls is not DungeonRun:
-                    installed_pack[folder] = cls
+                    installed_app[folder] = cls
 
-    print("List of installed pack:")
-    for index, pack in enumerate(installed_pack):
-        print(f"{index + 1}. {pack}")
+    print("List of installed app:")
+    for index, app in enumerate(installed_app):
+        print(f"{index + 1}. {app}")
 
     while True:
-        chosen_pack = input("\nDesired pack: ")
+        chosen_app = input("\nChoose an app: ")
 
-        if chosen_pack not in installed_pack:
-            print("Pack not found")
+        if chosen_app not in installed_app:
+            print("App not found")
             continue
         else:
             break
-    installed_pack[chosen_pack]().run()
+    installed_app[chosen_app]().run()

@@ -1,15 +1,10 @@
-from dungeonrun.sector import BaseSector, Dialogue, Route
-from pack.DR_Classic.core.sector import (
+from app.DR_Classic.core.sector import (
     DialogueMixin,
-    MultipleEntityEncounter,
-    SingleEntityEncounter,
+    MultipleEntityProcess,
+    SingleEntityProcess,
 )
-from pack.DR_Classic.entities.enemies import (
-    Boss,
-    Minotaur,
-    Rat,
-    StoneGargoyle,
-)
+from app.DR_Classic.entities.enemies import Boss, Minotaur, Rat, StoneGargoyle
+from dungeonrun.sector import BaseSector, Dialogue, Route
 
 
 class Intro(DialogueMixin, BaseSector):
@@ -28,7 +23,7 @@ class Intro(DialogueMixin, BaseSector):
         return super().execute()
 
 
-class RoomOne(DialogueMixin, SingleEntityEncounter, BaseSector):
+class RoomOne(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomTwo", "go_east"),
         Route("rooms.RoomSix", "go_south"),
@@ -48,7 +43,7 @@ class RoomOne(DialogueMixin, SingleEntityEncounter, BaseSector):
     # ]
 
 
-class RoomTwo(DialogueMixin, SingleEntityEncounter, BaseSector):
+class RoomTwo(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomFive", "go_south"),
         Route("rooms.RoomOne", "go_west"),
@@ -65,7 +60,7 @@ class RoomTwo(DialogueMixin, SingleEntityEncounter, BaseSector):
     # ]
 
 
-class RoomThree(DialogueMixin, MultipleEntityEncounter, BaseSector):
+class RoomThree(DialogueMixin, MultipleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomNine", "go_south"),
         Route("rooms.RoomFive", "go_west"),
@@ -83,7 +78,7 @@ class RoomThree(DialogueMixin, MultipleEntityEncounter, BaseSector):
     # ]
 
 
-class RoomFour(DialogueMixin, SingleEntityEncounter, BaseSector):
+class RoomFour(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomFive", "go_east"),
         Route("rooms.RoomSeven", "go_south"),
@@ -102,7 +97,7 @@ class RoomFour(DialogueMixin, SingleEntityEncounter, BaseSector):
     # ]
 
 
-class RoomFive(DialogueMixin, SingleEntityEncounter, BaseSector):
+class RoomFive(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomTwo", "go_north"),
         Route("rooms.RoomThree", "go_east"),
@@ -120,7 +115,7 @@ class RoomFive(DialogueMixin, SingleEntityEncounter, BaseSector):
     # ]
 
 
-class RoomSix(MultipleEntityEncounter, DialogueMixin, BaseSector):
+class RoomSix(MultipleEntityProcess, DialogueMixin, BaseSector):
     route = [
         Route("rooms.RoomOne", "go_north"),
         Route("rooms.RoomFour", "go_northeast"),

@@ -1,8 +1,8 @@
+from app.DR_Classic.core.exceptions import PlayerDead
+from app.DR_Classic.core.process import BattleSequence
+from app.DR_Classic.entities.player import Player
+from app.DR_Classic.sector.start import MainMenu
 from dungeonrun.dungeonrun import DungeonRun
-from pack.DR_Classic.core.encounter import BattleSequence
-from pack.DR_Classic.core.exceptions import PlayerDead
-from pack.DR_Classic.entities.player import Player
-from pack.DR_Classic.sector.start import MainMenu
 
 
 class MyGame(DungeonRun):

@@ -16,7 +16,7 @@ class Enemy(BaseEntity):
     evade_chance = NumberProp(0)
     experience_drop = RandomizedNumber(0, 1)
 
-    encounter_chance = NumberProp(0)
+    process_chance = NumberProp(0)
 
     visible_prop = [
         {
@@ -64,7 +64,7 @@ class BlueSlime(Enemy):
     evade_chance = NumberProp(0)
     experience_drop = RandomizedNumber(1, 2)
 
-    encounter_chance = NumberProp(0)
+    process_chance = NumberProp(0)
 
 
 ########
@@ -80,7 +80,7 @@ class Rat(Enemy):
     evade_chance = NumberProp(0.03)
     experience_drop = RandomizedNumber(1, 2)
 
-    encounter_chance = NumberProp(0.6)
+    process_chance = NumberProp(0.6)
 
 
 class Spider(Enemy):
@@ -93,7 +93,7 @@ class Spider(Enemy):
     evade_chance = NumberProp(0.02)
     experience_drop = RandomizedNumber(5, 8)
 
-    encounter_chance = NumberProp(0.4)
+    process_chance = NumberProp(0.4)
 
 
 class Goblin(Enemy):
@@ -106,7 +106,7 @@ class Goblin(Enemy):
     evade_chance = NumberProp(0.05)
     experience_drop = RandomizedNumber(5, 8)
 
-    encounter_chance = NumberProp(0.4)
+    process_chance = NumberProp(0.4)
 
 
 ##########
@@ -122,7 +122,7 @@ class Skeleton(Enemy):
     evade_chance = NumberProp(0.08)
     experience_drop = RandomizedNumber(12, 16)
 
-    encounter_chance = NumberProp(0.65)
+    process_chance = NumberProp(0.65)
 
 
 class GreenSlime(Enemy):
@@ -135,7 +135,7 @@ class GreenSlime(Enemy):
     evade_chance = NumberProp(0.06)
     experience_drop = RandomizedNumber(10, 20)
 
-    encounter_chance = NumberProp(0.5)
+    process_chance = NumberProp(0.5)
 
 
 class RedSlime(Enemy):
@@ -148,7 +148,7 @@ class RedSlime(Enemy):
     evade_chance = NumberProp(0.1)
     experience_drop = RandomizedNumber(10, 20)
 
-    encounter_chance = NumberProp(0.5)
+    process_chance = NumberProp(0.5)
 
 
 ########
@@ -164,7 +164,7 @@ class Zombie(Enemy):
     evade_chance = NumberProp(0)
     experience_drop = RandomizedNumber(18, 25)
 
-    encounter_chance = NumberProp(0.6)
+    process_chance = NumberProp(0.6)
 
 
 class HollowKnight(Enemy):
@@ -177,7 +177,7 @@ class HollowKnight(Enemy):
     evade_chance = NumberProp(0.12)
     experience_drop = RandomizedNumber(20, 40)
 
-    encounter_chance = NumberProp(0.4)
+    process_chance = NumberProp(0.4)
 
 
 class FallenPaladin(Enemy):
@@ -190,7 +190,7 @@ class FallenPaladin(Enemy):
     evade_chance = NumberProp(0.15)
     experience_drop = RandomizedNumber(20, 40)
 
-    encounter_chance = NumberProp(0.4)
+    process_chance = NumberProp(0.4)
 
 
 #############
@@ -206,7 +206,7 @@ class Minotaur(Enemy):
     evade_chance = NumberProp(0.05)
     experience_drop = RandomizedNumber(50, 70)
 
-    encounter_chance = NumberProp(1)
+    process_chance = NumberProp(1)
 
 
 class StoneGargoyle(Enemy):
@@ -219,7 +219,7 @@ class StoneGargoyle(Enemy):
     evade_chance = NumberProp(0.15)
     experience_drop = RandomizedNumber(80, 100)
 
-    encounter_chance = NumberProp(1)
+    process_chance = NumberProp(1)
 
 
 ########
@@ -235,4 +235,4 @@ class Boss(Enemy):
     evade_chance = NumberProp(0.1)
     experience_drop = RandomizedNumber(100, 150)
 
-    encounter_chance = NumberProp(1)
+    process_chance = NumberProp(1)
