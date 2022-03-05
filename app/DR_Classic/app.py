@@ -7,7 +7,7 @@ from dungeonrun.dungeonrun import DungeonRun
 
 class MyGame(DungeonRun):
     BEGIN_CLASS = MainMenu
-    ENCOUNTER_CLASS = BattleSequence
+    PROCESS_CLASS = BattleSequence
     MAIN_ACTOR = Player
 
     def run(self) -> None:

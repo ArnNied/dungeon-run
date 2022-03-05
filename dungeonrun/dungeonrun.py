@@ -12,7 +12,7 @@ class DungeonRun:
     Main class as entry point
     """
 
-    ENCOUNTER_CLASS = Process
+    PROCESS_CLASS = Process
     BEGIN_CLASS = None
     MAIN_ACTOR = BaseEntity
     END_CLASS = None
