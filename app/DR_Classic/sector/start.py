@@ -48,7 +48,7 @@ class AllocateSTR(BaseSector):
         try:
             user_input = int(user_input)
             if 0 <= user_input <= self.APP.starting_points:
-                self.APP.MAIN_ACTOR.strength.update(user_input)
+                self.APP.MAIN_ENTITY.strength.update(user_input)
                 self.APP.starting_points -= user_input
                 return Route("start.AllocateAGI")
 
@@ -88,7 +88,7 @@ class AllocateAGI(BaseSector):
         try:
             user_input = int(user_input)
             if 0 <= user_input <= self.APP.starting_points:
-                self.APP.MAIN_ACTOR.agility.update(user_input)
+                self.APP.MAIN_ENTITY.agility.update(user_input)
                 self.APP.starting_points -= user_input
                 return Route("start.AllocateMISC")
 
@@ -126,7 +126,7 @@ class AllocateMISC(BaseSector):
         try:
             user_input = int(user_input)
             if 0 <= user_input <= self.APP.starting_points:
-                self.APP.MAIN_ACTOR.misc.update(user_input)
+                self.APP.MAIN_ENTITY.misc.update(user_input)
                 self.APP.starting_points -= user_input
                 return Route("start.Confirmation")
 
@@ -166,7 +166,7 @@ class Confirmation(BaseSector):
 
         print("You will start with these stats")
         print("====================")
-        print(self.APP.MAIN_ACTOR.stringify_prop())
+        print(self.APP.MAIN_ENTITY.stringify_prop())
 
         return super().execute()
 

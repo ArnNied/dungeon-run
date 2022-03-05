@@ -18,7 +18,7 @@ class Intro(DialogueMixin, BaseSector):
     ]
 
     def execute(self) -> "BaseSector":
-        self.APP.PROCESS_CLASS(self.APP.MAIN_ACTOR, Rat()).flow()
+        self.APP.PROCESS_CLASS(self.APP.MAIN_ENTITY, Rat()).flow()
 
         return super().execute()
 

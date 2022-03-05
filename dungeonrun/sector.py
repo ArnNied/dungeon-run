@@ -188,7 +188,7 @@ class MultipleEntityProcess:
         entities = self.process_check(self.import_entities())
 
         for entity in entities:
-            self.APP.PROCESS_CLASS(self.APP.MAIN_ACTOR, entity()).flow()
+            self.APP.PROCESS_CLASS(self.APP.MAIN_ENTITY, entity()).flow()
 
         super().dispatch()
 

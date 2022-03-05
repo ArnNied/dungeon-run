@@ -14,7 +14,7 @@ class DungeonRun:
 
     PROCESS_CLASS = Process
     BEGIN_CLASS = None
-    MAIN_ACTOR = BaseEntity
+    MAIN_ENTITY = BaseEntity
     END_CLASS = None
     CLEAR_PREVIOUS = True
 
@@ -25,7 +25,7 @@ class DungeonRun:
     def prepare(self) -> None:
         _, app_name = inspect.getmodule(self).__package__.split(".")
         self._APP_NAME = app_name
-        self.MAIN_ACTOR = self.MAIN_ACTOR()
+        self.MAIN_ENTITY = self.MAIN_ENTITY()
 
     def run(self) -> None:
         sector = self.BEGIN_CLASS(self).execute()
