@@ -16,6 +16,7 @@ class DungeonRun:
     BEGIN_CLASS = None
     MAIN_ACTOR = BaseEntity
     END_CLASS = None
+    CLEAR_PREVIOUS = True
 
     def __init__(self) -> None:
         clear_stdout()
@@ -31,7 +32,8 @@ class DungeonRun:
 
         try:
             while True:
-                clear_stdout()
+                if self.CLEAR_PREVIOUS:
+                    clear_stdout()
                 sector = sector(self).execute()
         except End:
             if self.END_CLASS:
