@@ -89,6 +89,17 @@ class BattleSequence(Process):
             PlayerEvent().level_up(self.main_actor)
 
     def execute(self):
+        self.before()
+        result = self.main()
+
+        time.sleep(2)
+
+        if result:
+            self.after()
+
+        return result
+
+    def main(self):
         try:
             while True:
                 self.cycle += 1
@@ -108,22 +119,22 @@ class BattleSequence(Process):
                     raise EnemyDead
         except EnemyDead:
             print(f"{self.other.name.get()} has been killed")
+
+            return True
         except PlayerEscape:
             print("You have succesfully escaped")
-
-        time.sleep(2)
 
     def player_action(self):
         repeat = True
         while repeat:
             clear_stdout()
             self.display()
-            available_action = {
-                "attack": "attack",
-                "parry": "parry",
-                "inventory": "inventory",
-                "escape": "escape",
-            }
+            available_action = [
+                "attack",
+                "parry",
+                "inventory",
+                "escape",
+            ]
 
             print(
                 " :: ".join([action.title() for action in available_action])
@@ -212,6 +223,7 @@ class BattleSequence(Process):
             print(f"You suffered {player_receive} damage")
 
     def escape(self):
+        raise PlayerEscape
         if rng(1 - self.main_actor.health_point.current_percentage()):
             raise PlayerEscape
         else:
