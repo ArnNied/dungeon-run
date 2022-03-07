@@ -5,6 +5,7 @@ from app.DR_Classic.core.sector import (
 )
 from app.DR_Classic.entities.enemies import Boss, Minotaur, Rat, StoneGargoyle
 from dungeonrun.sector import BaseSector, Dialogue, Route
+from dungeonrun.utils import import_from_app
 
 
 class Intro(DialogueMixin, BaseSector):
@@ -224,8 +225,21 @@ class RoomThirteen(DialogueMixin, BaseSector):
     ]
 
     dialogue = [
-        Dialogue("MINOTAUR.\n"),
+        Dialogue("A big minotaur is sitting on a throne.\n"),
+        Dialogue("It noticed your presence.\n"),
     ]
+
+    def execute(self) -> "BaseSector":
+        result = self.APP.PROCESS_CLASS(
+            self.APP.MAIN_ENTITY, Minotaur()
+        ).execute()
+
+        if not result:
+            return import_from_app(
+                self.APP._APP_NAME, "sector.rooms.RoomNine"
+            )
+
+        return super().execute()
 
 
 class RoomFourteen(DialogueMixin, BaseSector):
@@ -246,8 +260,22 @@ class RoomFifteen(DialogueMixin, BaseSector):
     ]
 
     dialogue = [
-        Dialogue("GARGOYLE.\n"),
+        Dialogue("A room full of treasure greets your eyes.\n"),
+        Dialogue("Winged statue encircles the room.\n"),
+        Dialogue("One of them started moving.\n"),
     ]
+
+    def execute(self) -> "BaseSector":
+        result = self.APP.PROCESS_CLASS(
+            self.APP.MAIN_ENTITY, StoneGargoyle()
+        ).execute()
+
+        if not result:
+            return import_from_app(
+                self.APP._APP_NAME, "sector.rooms.RoomSixteen"
+            )
+
+        return super().execute()
 
 
 class RoomSixteen(DialogueMixin, BaseSector):
