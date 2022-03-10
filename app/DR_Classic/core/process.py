@@ -1,56 +1,111 @@
 import time
+from typing import Union
 
 from app.DR_Classic.core.exceptions import EnemyDead, PlayerDead, PlayerEscape
+from app.DR_Classic.entities.apparel import Apparel
 from app.DR_Classic.entities.enemies import Enemy
 from app.DR_Classic.entities.player import Player
+from app.DR_Classic.entities.weapons import AxeThree, Weapon
 from dungeonrun.process import Process
 from dungeonrun.utils import clear_stdout, rng
 
 
-class PlayerEvent:
-    def level_up(self, player: Player):
+class BaseEvent:
+    def __init__(self, player: Player):
+        self.player = player
+
+
+class LootEvent(BaseEvent):
+    def handle_drop(self, item):
+        getattr(self, f"{item.item_type.get()}_drop")(item)
+
+    def equippable_drop(self, equippable: Union[Apparel, Weapon]):
+        is_valid = False
+        current_equipment = getattr(
+            self.player, equippable.item_category.get()
+        )
+
+        while not is_valid:
+            clear_stdout()
+            print(
+                "=========================================================="
+            )
+            print(f"You found a {equippable.name.get()}!")
+            print(equippable.stringify_prop())
+            print()
+            print(f"Your {current_equipment.get().name.get()}")
+            print(current_equipment.get().stringify_prop())
+            print(
+                "=========================================================="
+            )
+            print("What do you want to do?\n")
+
+            valid_action = ["take", "ignore"]
+            print(" :: ".join([action.upper() for action in valid_action]))
+            user_input = input("> ").lower()
+
+            if user_input in valid_action:
+                is_valid = True
+                if user_input == "take":
+                    current_equipment.update(equippable)
+                    print(f"You take the {equippable.name.get()}.")
+                else:
+                    print(f"You ignore the {equippable.name.get()}.")
+            else:
+                print("Invalid action.")
+
+            time.sleep(5)
+
+    def consumable_drop(self, consumable):
+        print("consumable_drop")
+
+
+class PlayerEvent(BaseEvent):
+    def level_up(self):
         clear_stdout()
 
         print("Level up")
-        player.level.add(1)
+        self.player.level.add(1)
 
         # INCREASE HP
         print("Max HP increased by 10")
         print("HP refilled")
-        player.health_point.max_value.add(10)
-        player.health_point.update(player.health_point.max_value.get())
+        self.player.health_point.max_value.add(10)
+        self.player.health_point.update(
+            self.player.health_point.max_value.get()
+        )
 
         # INCREASE EXP REQUIRED
-        player.experience.subtract(player.experience.max_value.get())
-        player.experience.max_value.add(10)
+        self.player.experience.subtract(
+            self.player.experience.max_value.get()
+        )
+        self.player.experience.max_value.add(10)
 
         if (
-            player.strength.get() < player.strength.max_value.get()
-            or player.agility.get() < player.agility.max_value.get()
-            or player.misc.get() < player.misc.max_value.get()
+            self.player.strength.get() < self.player.strength.max_value.get()
+            or self.player.agility.get() < self.player.agility.max_value.get()
+            or self.player.misc.get() < self.player.misc.max_value.get()
         ):
             print("You received an attribute point")
-            self.allocate_point(player)
+            self.allocate_point()
         else:
             print("Max attribute reached!")
 
         time.sleep(1)
 
-    def allocate_point(self, player: Player):
+    def allocate_point(self):
         while True:
             time.sleep(1)
 
-            # clear_stdout()
             print(
-                f"\nStrength: {player.strength}    Agility: {player.agility}    Misc: {player.misc}",
-                end="\n\n",
+                f"\nStrength: {self.player.strength}    Agility: {self.player.agility}    Misc: {self.player.misc}\n",
             )
 
             attributes = ["strength", "agility", "misc"]
             allowed_action = []
 
             for attribute in attributes:
-                attr = getattr(player, attribute)
+                attr = getattr(self.player, attribute)
                 if attr.get() < attr.max_value.get():
                     allowed_action.append(attribute)
 
@@ -58,22 +113,22 @@ class PlayerEvent:
             player_choice = input("> ").lower()
 
             if player_choice in allowed_action:
-                getattr(player, player_choice).add(1)
+                getattr(self.player, player_choice).add(1)
                 break
             else:
-                print("Invalid input")
+                print("Invalid attribute")
 
 
 class BattleSequence(Process):
-    def __init__(self, main_actor: Player, other: Enemy):
-        super().__init__(main_actor=main_actor, other=other)
+    def __init__(self, player: Player, other: Enemy):
+        super().__init__(player=player, other=other)
         self.cycle = 0
 
     def display(self):
         print(f"===== Battle: Cycle {self.cycle} =====")
         print(self.other.stringify_prop())
         print()
-        print(self.main_actor.stringify_prop())
+        print(self.player.stringify_prop())
         print("==============================")
 
     def before(self):
@@ -81,12 +136,15 @@ class BattleSequence(Process):
 
     def after(self):
         time.sleep(1)
-        self.main_actor.experience.add(100)
+
+        LootEvent(self.player).handle_drop(AxeThree())
+        self.player.experience.add(100)
+
         while (
-            self.main_actor.experience.get()
-            >= self.main_actor.experience.max_value.get()
+            self.player.experience.get()
+            >= self.player.experience.max_value.get()
         ):
-            PlayerEvent().level_up(self.main_actor)
+            PlayerEvent(self.player).level_up()
 
     def execute(self):
         self.before()
@@ -107,7 +165,7 @@ class BattleSequence(Process):
                 time.sleep(1.5)
                 clear_stdout()
                 self.display()
-                if not self.main_actor.health_point.get() <= 0:
+                if not self.player.health_point.get() <= 0:
                     action = self.player_action()
                 else:
                     raise PlayerDead
@@ -152,7 +210,7 @@ class BattleSequence(Process):
 
     def enemy_action(self):
         if rng(self.other.hit_chance.get()):
-            if rng(self.main_actor.evade_chance.get()):
+            if rng(self.player.evade_chance.get()):
                 print("Attack evaded!")
             else:
                 damage = self.other.calculate_attack()
@@ -160,23 +218,23 @@ class BattleSequence(Process):
                     damage *= 2
                     print("CRITICAL")
                 player_receive = round(
-                    damage * (1 - self.main_actor.damage_reduction.get())
+                    damage * (1 - self.player.damage_reduction.get())
                 )
 
-                self.main_actor.health_point.subtract(player_receive)
+                self.player.health_point.subtract(player_receive)
 
                 print(f"You have suffered {player_receive} damage")
         else:
             print(f"{self.other.name.get()} missed!")
 
     def attack(self):
-        if rng(self.main_actor.hit_chance.get()):
+        if rng(self.player.hit_chance.get()):
             if rng(self.other.evade_chance.get()):
                 print(f"{self.other.name.get()} evaded")
             else:
-                damage = self.main_actor.calculate_attack()
+                damage = self.player.calculate_attack()
 
-                if rng(self.main_actor.crit_chance.get()):
+                if rng(self.player.crit_chance.get()):
                     damage *= 2
                     print("CRITICAL: ", end="")
 
@@ -187,7 +245,7 @@ class BattleSequence(Process):
             print("Attack missed")
 
     def parry(self):
-        if rng(self.main_actor.parry_chance.get()):
+        if rng(self.player.parry_chance.get()):
             damage = self.other.calculate_attack()
 
             if rng(self.other.crit_chance.get()):
@@ -196,11 +254,11 @@ class BattleSequence(Process):
 
             enemy_receive = round(damage * 0.9)
             player_receive = round(
-                damage * 0.1 * (1 - self.main_actor.damage_reduction.get())
+                damage * 0.1 * (1 - self.player.damage_reduction.get())
             )
 
             self.other.health_point.subtract(enemy_receive)
-            self.main_actor.health_point.subtract(player_receive)
+            self.player.health_point.subtract(player_receive)
 
             print("Parry successful")
             print(f"You received {player_receive} damage")
@@ -214,17 +272,16 @@ class BattleSequence(Process):
                 print("CRITICAL: ", end="")
 
             player_receive = round(
-                damage * (1 - self.main_actor.damage_reduction.get())
+                damage * (1 - self.player.damage_reduction.get())
             )
 
-            self.main_actor.health_point.subtract(player_receive)
+            self.player.health_point.subtract(player_receive)
 
             print("Parry failed")
             print(f"You suffered {player_receive} damage")
 
     def escape(self):
-        raise PlayerEscape
-        if rng(1 - self.main_actor.health_point.current_percentage()):
+        if rng(1 - self.player.health_point.current_percentage()):
             raise PlayerEscape
         else:
             print("Escape failed")

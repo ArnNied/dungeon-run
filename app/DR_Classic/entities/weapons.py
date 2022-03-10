@@ -6,6 +6,8 @@ from .utils import RandomizedNumber
 
 class Weapon(BaseEntity):
     name = Prop("BASE WEAPON")
+    item_type = Prop("equippable")
+    item_category = Prop("weapon")
 
     attack = RandomizedNumber(1, 1)
     hit_chance = NumberProp(0)
@@ -153,7 +155,7 @@ class AxeTwo(Axe, TierTwoWeapon):
     crit_chance = NumberProp(0.08)
 
 
-class AxeOne(Axe, TierOneWeapon):
+class AxeThree(Axe, TierThreeWeapon):
     name = Prop("Daedric Axe")
 
     attack = RandomizedNumber(24, 45)
@@ -198,7 +200,7 @@ class RappierTwo(Rapier, TierTwoWeapon):
     crit_chance = NumberProp(0.09)
 
 
-class RappierOne(Rapier, TierOneWeapon):
+class RappierThree(Rapier, TierThreeWeapon):
     name = Prop("Daedric Rappier")
 
     attack = RandomizedNumber(17, 21)

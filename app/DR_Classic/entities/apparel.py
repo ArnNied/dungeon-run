@@ -4,6 +4,8 @@ from dungeonrun.prop import NumberProp, Prop
 
 class Apparel(BaseEntity):
     name = Prop("BASE APPAREL")
+    item_type = Prop("equippable")
+    item_category = Prop("apparel")
 
     damage_reduction = NumberProp(0)
     parry_chance = NumberProp(0)
