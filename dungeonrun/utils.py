@@ -2,7 +2,7 @@ import importlib
 import os
 import random
 import time
-from typing import Union
+from typing import Iterable, Union
 
 
 def animate(string_: str, delay: float = 0.014) -> None:
@@ -51,5 +51,9 @@ def import_from_app(app_name: str, path: str):
     )
 
 
-def clear_stdout():
+def clear_stdout() -> None:
     os.system("cls" if os.name == "nt" else "clear")
+
+
+def join_iter(separator: str, iterable: Iterable) -> str:
+    return separator.join(str(item) for item in iterable)
