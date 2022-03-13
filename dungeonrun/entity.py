@@ -1,16 +1,14 @@
-from dungeonrun.prop import Prop
-
-
 class BaseEntity:
     """
     Basic entity class.
     """
 
-    name = Prop("")
+    __divider = ": "  # Divider between verbose name and value of a property.
+    __separator = "    "  # Separator between each property in the same row.
 
     visible_prop = [
         {
-            "Name": "name",
+            # "Name": "name",
         },
     ]
 
@@ -18,10 +16,10 @@ class BaseEntity:
         rows = []
         for props in self.visible_prop:
             row = [
-                f"{prop_key}: {getattr(self, prop_val)}"
+                f"{prop_key}{self.__divider}{getattr(self, prop_val)}"
                 for prop_key, prop_val in props.items()
             ]
 
-            rows.append("    ".join(row))
+            rows.append(self.__separator.join(row))
 
         return "\n".join(rows)
