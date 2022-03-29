@@ -3,11 +3,15 @@ from typing import Union
 
 from app.DR_Classic.core.exceptions import EnemyDead, PlayerDead, PlayerEscape
 from app.DR_Classic.entities.apparel import Apparel
+from app.DR_Classic.entities.consumables import (
+    GreaterHealingPotion,
+    LesserHealingPotion,
+)
 from app.DR_Classic.entities.enemies import Enemy
 from app.DR_Classic.entities.player import Player
 from app.DR_Classic.entities.weapons import AxeThree, Weapon
 from dungeonrun.process import Process
-from dungeonrun.utils import clear_stdout, rng
+from dungeonrun.utils import clear_stdout, join_iter, rng
 
 
 class BaseEvent:
@@ -30,7 +34,7 @@ class LootEvent(BaseEvent):
             print(
                 "=========================================================="
             )
-            print(f"You found a {equippable.name.get()}!")
+            print(f"You found a {equippable.name.get()}")
             print(equippable.stringify_prop())
             print()
             print(f"Your {current_equipment.get().name.get()}")
@@ -41,20 +45,20 @@ class LootEvent(BaseEvent):
             print("What do you want to do?\n")
 
             valid_action = ["take", "ignore"]
-            print(" :: ".join([action.upper() for action in valid_action]))
+            print(join_iter(valid_action))
+            # print(" :: ".join([action.upper() for action in valid_action]))
             user_input = input("> ").lower()
 
             if user_input in valid_action:
                 is_valid = True
                 if user_input == "take":
                     current_equipment.update(equippable)
-                    print(f"You take the {equippable.name.get()}.")
-                else:
-                    print(f"You ignore the {equippable.name.get()}.")
+
+                print(f"You {user_input} the {equippable.name.get()}.")
             else:
                 print("Invalid action.")
 
-            time.sleep(5)
+            time.sleep(1)
 
     def consumable_drop(self, consumable):
         print("consumable_drop")
@@ -102,17 +106,18 @@ class PlayerEvent(BaseEvent):
             )
 
             attributes = ["strength", "agility", "misc"]
-            allowed_action = []
+            valid_action = []
 
             for attribute in attributes:
                 attr = getattr(self.player, attribute)
                 if attr.get() < attr.max_value.get():
-                    allowed_action.append(attribute)
+                    valid_action.append(attribute)
 
-            print(" :: ".join([action.upper() for action in allowed_action]))
+            print(join_iter(valid_action))
+            # print(" :: ".join([action.upper() for action in valid_action]))
             player_choice = input("> ").lower()
 
-            if player_choice in allowed_action:
+            if player_choice in valid_action:
                 getattr(self.player, player_choice).add(1)
                 break
             else:
@@ -124,7 +129,10 @@ class BattleSequence(Process):
         super().__init__(player=player, other=other)
         self.cycle = 0
 
-    def display(self):
+    def display(self, clear=False):
+        if clear:
+            clear_stdout()
+
         print(f"===== Battle: Cycle {self.cycle} =====")
         print(self.other.stringify_prop())
         print()
@@ -133,6 +141,9 @@ class BattleSequence(Process):
 
     def before(self):
         print(f"You have encountered {self.other.name.get()}")
+        self.player.inventory.add(LesserHealingPotion)
+        self.player.inventory.add(LesserHealingPotion)
+        self.player.inventory.add(GreaterHealingPotion)
 
     def after(self):
         time.sleep(1)
@@ -163,12 +174,15 @@ class BattleSequence(Process):
                 self.cycle += 1
 
                 time.sleep(1.5)
-                clear_stdout()
-                self.display()
+                self.display(True)
                 if not self.player.health_point.get() <= 0:
                     action = self.player_action()
                 else:
                     raise PlayerDead
+
+                if action == "inventory":
+                    self.cycle -= 1
+                    continue
 
                 if not self.other.health_point.get() <= 0:
                     if action != "parry":
@@ -185,22 +199,20 @@ class BattleSequence(Process):
     def player_action(self):
         repeat = True
         while repeat:
-            clear_stdout()
-            self.display()
-            available_action = [
+            self.display(True)
+            valid_action = [
                 "attack",
                 "parry",
                 "inventory",
                 "escape",
             ]
 
-            print(
-                " :: ".join([action.title() for action in available_action])
-            )
+            print(join_iter(valid_action))
+            # print(" :: ".join([action.title() for action in valid_action]))
 
             player_action = input("> ").lower()
             print()
-            if player_action in available_action:
+            if player_action in valid_action:
                 repeat = getattr(self, player_action)()
             else:
                 print("Invalid action")
@@ -287,4 +299,26 @@ class BattleSequence(Process):
             print("Escape failed")
 
     def inventory(self):
-        print("Inventory under construction")
+        while True:
+            time.sleep(1)
+            self.display(True)
+
+            self.player.inventory.display(self.player, self.other)
+
+            valid_action = ["use", "cancel"]
+
+            print(join_iter(valid_action))
+
+            action, *item = input("> ").lower().split()
+
+            if action in valid_action:
+                if action == "cancel":
+                    break
+
+                self.player.inventory.use(
+                    " ".join(item), self.player, self.other
+                )
+
+            else:
+                print("Invalid action")
+                time.sleep(1)
