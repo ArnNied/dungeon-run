@@ -55,5 +55,11 @@ def clear_stdout() -> None:
     os.system("cls" if os.name == "nt" else "clear")
 
 
-def join_iter(separator: str, iterable: Iterable) -> str:
-    return separator.join(str(item) for item in iterable)
+def join_iter(
+    iterable: Union[list, tuple],
+    separator: str = " :: ",
+    str_method: str = "upper",
+) -> str:
+    return separator.join(
+        getattr(str(item), str_method)() for item in iterable
+    )
