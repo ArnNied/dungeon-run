@@ -24,6 +24,7 @@ class LootEvent(BaseEvent):
         getattr(self, f"{item.item_type.get()}_drop")(item)
 
     def equippable_drop(self, equippable: Union[Apparel, Weapon]):
+        equippable = equippable()
         is_valid = False
         current_equipment = getattr(
             self.player, equippable.item_category.get()
@@ -46,7 +47,6 @@ class LootEvent(BaseEvent):
 
             valid_action = ["take", "ignore"]
             print(join_iter(valid_action))
-            # print(" :: ".join([action.upper() for action in valid_action]))
             user_input = input("> ").lower()
 
             if user_input in valid_action:
@@ -61,7 +61,7 @@ class LootEvent(BaseEvent):
             time.sleep(1)
 
     def consumable_drop(self, consumable):
-        print("consumable_drop")
+        self.player.inventory.add(consumable)
 
 
 class PlayerEvent(BaseEvent):
@@ -114,7 +114,6 @@ class PlayerEvent(BaseEvent):
                     valid_action.append(attribute)
 
             print(join_iter(valid_action))
-            # print(" :: ".join([action.upper() for action in valid_action]))
             player_choice = input("> ").lower()
 
             if player_choice in valid_action:
@@ -141,21 +140,28 @@ class BattleSequence(Process):
 
     def before(self):
         print(f"You have encountered {self.other.name.get()}")
-        self.player.inventory.add(LesserHealingPotion)
-        self.player.inventory.add(LesserHealingPotion)
-        self.player.inventory.add(GreaterHealingPotion)
 
     def after(self):
         time.sleep(1)
 
-        LootEvent(self.player).handle_drop(AxeThree())
-        self.player.experience.add(100)
-
+        exp_dropped = self.other.experience_drop.get()
+        print(f"You received {exp_dropped} exp")
+        time.sleep(1)
+        self.player.experience.add(exp_dropped)
         while (
             self.player.experience.get()
             >= self.player.experience.max_value.get()
         ):
             PlayerEvent(self.player).level_up()
+
+        dropped_item = self.other.drop_item()
+        for item in dropped_item:
+            clear_stdout()
+            print(f"{self.other.name.get()} dropped a(n) {item.name.get()}")
+            time.sleep(1)
+            LootEvent(self.player).handle_drop(item)
+
+        clear_stdout()
 
     def execute(self):
         self.before()
@@ -208,10 +214,10 @@ class BattleSequence(Process):
             ]
 
             print(join_iter(valid_action))
-            # print(" :: ".join([action.title() for action in valid_action]))
-
             player_action = input("> ").lower()
+
             print()
+
             if player_action in valid_action:
                 repeat = getattr(self, player_action)()
             else:
@@ -228,7 +234,7 @@ class BattleSequence(Process):
                 damage = self.other.calculate_attack()
                 if rng(self.other.crit_chance.get()):
                     damage *= 2
-                    print("CRITICAL")
+                    print("CRITICAL: ", end="")
                 player_receive = round(
                     damage * (1 - self.player.damage_reduction.get())
                 )
@@ -242,7 +248,7 @@ class BattleSequence(Process):
     def attack(self):
         if rng(self.player.hit_chance.get()):
             if rng(self.other.evade_chance.get()):
-                print(f"{self.other.name.get()} evaded")
+                print(f"{self.other.name.get()} evaded!")
             else:
                 damage = self.player.calculate_attack()
 
@@ -254,16 +260,16 @@ class BattleSequence(Process):
 
                 print(f"You have dealt {damage} damage")
         else:
-            print("Attack missed")
+            print("Attack missed!")
 
     def parry(self):
+        damage = self.other.calculate_attack()
+
+        if rng(self.other.crit_chance.get()):
+            damage *= 2
+            print("CRITICAL: ", end="")
+
         if rng(self.player.parry_chance.get()):
-            damage = self.other.calculate_attack()
-
-            if rng(self.other.crit_chance.get()):
-                damage *= 2
-                print("CRITICAL: ", end="")
-
             enemy_receive = round(damage * 0.9)
             player_receive = round(
                 damage * 0.1 * (1 - self.player.damage_reduction.get())
@@ -277,12 +283,6 @@ class BattleSequence(Process):
             print(f"{self.other.name.get()} received {enemy_receive} damage")
 
         else:
-            damage = self.other.calculate_attack()
-
-            if rng(self.other.crit_chance.get()):
-                damage *= 2
-                print("CRITICAL: ", end="")
-
             player_receive = round(
                 damage * (1 - self.player.damage_reduction.get())
             )
@@ -305,14 +305,13 @@ class BattleSequence(Process):
 
             self.player.inventory.display(self.player, self.other)
 
-            valid_action = ["use", "cancel"]
+            valid_action = ["use", "return"]
 
             print(join_iter(valid_action))
-
             action, *item = input("> ").lower().split()
 
             if action in valid_action:
-                if action == "cancel":
+                if action == "return":
                     break
 
                 self.player.inventory.use(
