@@ -1,7 +1,14 @@
 import random
 
+from app.DR_Classic.entities.apparel import *
+from app.DR_Classic.entities.consumables import (
+    GreaterHealingPotion,
+    LesserHealingPotion,
+)
+from app.DR_Classic.entities.weapons import *
 from dungeonrun.entity import BaseEntity
 from dungeonrun.prop import NumberProp, Prop, PropWithMax
+from dungeonrun.utils import rng
 
 from .utils import RandomizedNumber
 
@@ -17,6 +24,8 @@ class Enemy(BaseEntity):
     experience_drop = RandomizedNumber(0, 1)
 
     process_chance = NumberProp(0)
+
+    droptable = []
 
     visible_prop = [
         {
@@ -50,6 +59,20 @@ class Enemy(BaseEntity):
     def calculate_attack(self):
         return random.randint(self.attack.get(), self.attack.max_value.get())
 
+    def drop_item(self):
+        items = list(
+            sorted(
+                self.droptable, key=lambda x: getattr(x, "drop_chance").get()
+            )
+        )
+
+        dropped_item = []
+        for item in items:
+            if rng(item.drop_chance.get()):
+                dropped_item.append(item)
+
+        return dropped_item
+
 
 #######
 # ??? #
@@ -66,6 +89,14 @@ class BlueSlime(Enemy):
 
     process_chance = NumberProp(0)
 
+    droptable = [
+        SwordThree,
+        RappierThree,
+        AxeThree,
+        LightThree,
+        HeavyThree,
+    ]
+
 
 ########
 # EASY #
@@ -78,9 +109,14 @@ class Rat(Enemy):
     hit_chance = NumberProp(0.70)
     crit_chance = NumberProp(0.01)
     evade_chance = NumberProp(0.03)
-    experience_drop = RandomizedNumber(1, 2)
+    experience_drop = RandomizedNumber(10, 17)
 
     process_chance = NumberProp(0.6)
+
+    droptable = [
+        LesserHealingPotion,
+        SwordOne,
+    ]
 
 
 class Spider(Enemy):
@@ -91,9 +127,15 @@ class Spider(Enemy):
     hit_chance = NumberProp(0.65)
     crit_chance = NumberProp(0.02)
     evade_chance = NumberProp(0.02)
-    experience_drop = RandomizedNumber(5, 8)
+    experience_drop = RandomizedNumber(15, 18)
 
     process_chance = NumberProp(0.4)
+
+    droptable = [
+        LesserHealingPotion,
+        HeavyOne,
+        RappierOne,
+    ]
 
 
 class Goblin(Enemy):
@@ -104,9 +146,15 @@ class Goblin(Enemy):
     hit_chance = NumberProp(0.7)
     crit_chance = NumberProp(0.08)
     evade_chance = NumberProp(0.05)
-    experience_drop = RandomizedNumber(5, 8)
+    experience_drop = RandomizedNumber(15, 18)
 
     process_chance = NumberProp(0.4)
+
+    droptable = [
+        LesserHealingPotion,
+        LightOne,
+        AxeOne,
+    ]
 
 
 ##########
@@ -120,9 +168,16 @@ class Skeleton(Enemy):
     hit_chance = NumberProp(0.7)
     crit_chance = NumberProp(0.05)
     evade_chance = NumberProp(0.08)
-    experience_drop = RandomizedNumber(12, 16)
+    experience_drop = RandomizedNumber(27, 31)
 
     process_chance = NumberProp(0.65)
+
+    droptable = [
+        LesserHealingPotion,
+        GreaterHealingPotion,
+        HeavyOne,
+        SwordTwo,
+    ]
 
 
 class GreenSlime(Enemy):
@@ -133,9 +188,16 @@ class GreenSlime(Enemy):
     hit_chance = NumberProp(0.75)
     crit_chance = NumberProp(0.05)
     evade_chance = NumberProp(0.06)
-    experience_drop = RandomizedNumber(10, 20)
+    experience_drop = RandomizedNumber(25, 35)
 
     process_chance = NumberProp(0.5)
+
+    droptable = [
+        LesserHealingPotion,
+        GreaterHealingPotion,
+        LightOne,
+        AxeTwo,
+    ]
 
 
 class RedSlime(Enemy):
@@ -146,9 +208,16 @@ class RedSlime(Enemy):
     hit_chance = NumberProp(0.85)
     crit_chance = NumberProp(0.16)
     evade_chance = NumberProp(0.1)
-    experience_drop = RandomizedNumber(10, 20)
+    experience_drop = RandomizedNumber(25, 35)
 
     process_chance = NumberProp(0.5)
+
+    droptable = [
+        LesserHealingPotion,
+        GreaterHealingPotion,
+        HeavyOne,
+        RappierTwo,
+    ]
 
 
 ########
@@ -162,9 +231,15 @@ class Zombie(Enemy):
     hit_chance = NumberProp(0.6)
     crit_chance = NumberProp(0.05)
     evade_chance = NumberProp(0)
-    experience_drop = RandomizedNumber(18, 25)
+    experience_drop = RandomizedNumber(38, 45)
 
     process_chance = NumberProp(0.6)
+
+    droptable = [
+        LesserHealingPotion,
+        GreaterHealingPotion,
+        AxeThree,
+    ]
 
 
 class HollowKnight(Enemy):
@@ -175,9 +250,16 @@ class HollowKnight(Enemy):
     hit_chance = NumberProp(0.85)
     crit_chance = NumberProp(0.08)
     evade_chance = NumberProp(0.12)
-    experience_drop = RandomizedNumber(20, 40)
+    experience_drop = RandomizedNumber(40, 60)
 
     process_chance = NumberProp(0.4)
+
+    droptable = [
+        LesserHealingPotion,
+        GreaterHealingPotion,
+        HeavyTwo,
+        SwordThree,
+    ]
 
 
 class FallenPaladin(Enemy):
@@ -188,9 +270,16 @@ class FallenPaladin(Enemy):
     hit_chance = NumberProp(0.8)
     crit_chance = NumberProp(0.22)
     evade_chance = NumberProp(0.15)
-    experience_drop = RandomizedNumber(20, 40)
+    experience_drop = RandomizedNumber(40, 60)
 
     process_chance = NumberProp(0.4)
+
+    droptable = [
+        LesserHealingPotion,
+        GreaterHealingPotion,
+        LightTwo,
+        RappierThree,
+    ]
 
 
 #############
@@ -204,7 +293,7 @@ class Minotaur(Enemy):
     hit_chance = NumberProp(0.95)
     crit_chance = NumberProp(0.08)
     evade_chance = NumberProp(0.05)
-    experience_drop = RandomizedNumber(50, 70)
+    experience_drop = RandomizedNumber(75, 95)
 
     process_chance = NumberProp(1)
 
@@ -217,7 +306,7 @@ class StoneGargoyle(Enemy):
     hit_chance = NumberProp(0.95)
     crit_chance = NumberProp(0.12)
     evade_chance = NumberProp(0.15)
-    experience_drop = RandomizedNumber(80, 100)
+    experience_drop = RandomizedNumber(110, 130)
 
     process_chance = NumberProp(1)
 
@@ -233,6 +322,6 @@ class Boss(Enemy):
     hit_chance = NumberProp(0.95)
     crit_chance = NumberProp(0.08)
     evade_chance = NumberProp(0.1)
-    experience_drop = RandomizedNumber(100, 150)
+    experience_drop = RandomizedNumber(150, 200)
 
     process_chance = NumberProp(1)
