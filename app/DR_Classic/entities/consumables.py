@@ -5,6 +5,7 @@ from dungeonrun.prop import NumberProp, Prop
 class BaseConsumable(BaseEntity):
     name = Prop("BASE CONSUMABLE")
     description = Prop("BASE CONSUMABLE")
+    item_type = Prop("consumable")
 
     def __init__(self, player, other):
         self.player = player
@@ -61,6 +62,8 @@ class LesserHealingPotion(HealingPotion):
     name = Prop("Lesser Healing Potion")
     health_point = NumberProp(20)
 
+    drop_chance = NumberProp(0.8)
+
     def effect(self):
         return super().effect() + self.player.misc.get() * 2
 
@@ -68,6 +71,8 @@ class LesserHealingPotion(HealingPotion):
 class GreaterHealingPotion(HealingPotion):
     name = Prop("Greater Healing Potion")
     health_point = NumberProp(40)
+
+    drop_chance = NumberProp(0.6)
 
     def effect(self):
         return super().effect() + self.player.misc.get() * 4
