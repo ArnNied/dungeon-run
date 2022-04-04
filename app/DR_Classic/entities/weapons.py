@@ -47,16 +47,13 @@ class Weapon(BaseEntity):
             player.misc.get() * 2 / 100 + self.crit_chance.get(),
         )
 
-    # def drop_check(self):
-    #     return rng(self.drop_chance.get())
-
 
 # UNARMED
 class Fist(Weapon):
     name = Prop("Fist")
 
     attack = RandomizedNumber(2, 6)
-    hit_chance = NumberProp(0.75)
+    hit_chance = NumberProp(0.5)
     crit_chance = NumberProp(0.05)
 
 
@@ -79,18 +76,18 @@ class TierThreeWeapon:
 class Sword(Weapon):
     def calculate_attack(self, player):
         return RandomizedNumber(
-            player.strength.get() * 3 + self.attack.get(),
-            player.strength.get() * 3 + self.attack.max_value.get(),
+            player.strength.get() * 4 + self.attack.get(),
+            player.strength.get() * 4 + self.attack.max_value.get(),
         )
 
     def calculate_hit_chance(self, player):
         return NumberProp(
-            player.agility.get() * 3 / 100 + self.hit_chance.get(),
+            player.agility.get() * 4 / 100 + self.hit_chance.get(),
         )
 
     def calculate_crit_chance(self, player):
         return NumberProp(
-            player.misc.get() * 2 / 100 + self.crit_chance.get(),
+            player.misc.get() * 3 / 100 + self.crit_chance.get(),
         )
 
 
@@ -124,18 +121,18 @@ class SwordThree(TierThreeWeapon, Sword):
 class Axe(Weapon):
     def calculate_attack(self, player):
         return RandomizedNumber(
-            player.strength.get() * 4 + self.attack.get(),
-            player.strength.get() * 4 + self.attack.max_value.get(),
+            player.strength.get() * 5 + self.attack.get(),
+            player.strength.get() * 5 + self.attack.max_value.get(),
         )
 
     def calculate_hit_chance(self, player):
         return NumberProp(
-            player.agility.get() * 1 / 100 + self.hit_chance.get(),
+            player.agility.get() * 2 / 100 + self.hit_chance.get(),
         )
 
     def calculate_crit_chance(self, player):
         return NumberProp(
-            player.misc.get() * 2 / 100 + self.crit_chance.get(),
+            player.misc.get() * 3 / 100 + self.crit_chance.get(),
         )
 
 
@@ -169,18 +166,18 @@ class AxeThree(TierThreeWeapon, Axe):
 class Rapier(Weapon):
     def calculate_attack(self, player):
         return RandomizedNumber(
-            player.strength.get() * 2 + self.attack.get(),
-            player.strength.get() * 2 + self.attack.max_value.get(),
+            player.strength.get() * 3 + self.attack.get(),
+            player.strength.get() * 3 + self.attack.max_value.get(),
         )
 
     def calculate_hit_chance(self, player):
         return NumberProp(
-            player.agility.get() * 2 / 100 + self.hit_chance.get(),
+            player.agility.get() * 3 / 100 + self.hit_chance.get(),
         )
 
     def calculate_crit_chance(self, player):
         return NumberProp(
-            player.misc.get() * 3 / 100 + self.crit_chance.get(),
+            player.misc.get() * 4 / 100 + self.crit_chance.get(),
         )
 
 
