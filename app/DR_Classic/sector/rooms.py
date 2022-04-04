@@ -38,10 +38,10 @@ class RoomOne(DialogueMixin, SingleEntityProcess, BaseSector):
         Dialogue("You see a compass carved in the middle of the floor\n"),
     ]
 
-    # entities = [
-    #     "enemies.Rat",
-    #     "enemies.BlueSlime",
-    # ]
+    entities = [
+        "enemies.Rat",
+        "enemies.BlueSlime",
+    ]
 
 
 class RoomTwo(DialogueMixin, SingleEntityProcess, BaseSector):
@@ -55,28 +55,27 @@ class RoomTwo(DialogueMixin, SingleEntityProcess, BaseSector):
         Dialogue("With dimly lit torches illuminating the surrounding.\n"),
     ]
 
-    # entities = [
-    #     "enemies.Rat",
-    #     "enemies.Spider",
-    # ]
+    entities = [
+        "enemies.Rat",
+        "enemies.Spider",
+    ]
 
 
-class RoomThree(DialogueMixin, MultipleEntityProcess, BaseSector):
+class RoomThree(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomNine", "go_south"),
         Route("rooms.RoomFive", "go_west"),
     ]
 
     dialogue = [
-        Dialogue("Massive pillar can be seen supporting the ceiling.\n"),
-        Dialogue("Piles of bones are scattered across the ground.\n"),
+        Dialogue("The room is massive.\n"),
+        Dialogue("A rusty chandelier is hanging from the ceiling.\n"),
     ]
 
-    # entities = [
-    #     "enemies.Skeleton",
-    #     "enemies.Skeleton",
-    #     "enemies.Skeleton",
-    # ]
+    entities = [
+        "enemies.Goblin",
+        "enemies.Spider",
+    ]
 
 
 class RoomFour(DialogueMixin, SingleEntityProcess, BaseSector):
@@ -91,11 +90,11 @@ class RoomFour(DialogueMixin, SingleEntityProcess, BaseSector):
         Dialogue("Cracks can be seen across the wall.\n"),
     ]
 
-    # entities = [
-    #     "enemies.Goblin",
-    #     "enemies.Spider",
-    #     "enemies.Rat",
-    # ]
+    entities = [
+        "enemies.Goblin",
+        "enemies.Spider",
+        "enemies.Rat",
+    ]
 
 
 class RoomFive(DialogueMixin, SingleEntityProcess, BaseSector):
@@ -110,13 +109,13 @@ class RoomFive(DialogueMixin, SingleEntityProcess, BaseSector):
         Dialogue("You have no idea what they are.\n"),
     ]
 
-    # entities = [
-    #     "enemies.Rat",
-    #     "enemies.Spider",
-    # ]
+    entities = [
+        "enemies.Rat",
+        "enemies.Goblin",
+    ]
 
 
-class RoomSix(MultipleEntityProcess, DialogueMixin, BaseSector):
+class RoomSix(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomOne", "go_north"),
         Route("rooms.RoomFour", "go_northeast"),
@@ -129,14 +128,14 @@ class RoomSix(MultipleEntityProcess, DialogueMixin, BaseSector):
         Dialogue("Each marked with unknown symbol.\n"),
     ]
 
-    # entities = [
-    #     "enemies.Goblin",
-    #     "enemies.Rat",
-    #     "enemies.Spider",
-    # ]
+    entities = [
+        "enemies.Goblin",
+        "enemies.Rat",
+        "enemies.Spider",
+    ]
 
 
-class RoomSeven(DialogueMixin, BaseSector):
+class RoomSeven(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomFour", "go_north"),
         Route("rooms.RoomEight", "go_east"),
@@ -152,8 +151,13 @@ class RoomSeven(DialogueMixin, BaseSector):
         ),
     ]
 
+    entities = [
+        "enemies.RedSlime",
+        "enemies.GreenSlime",
+    ]
 
-class RoomEight(DialogueMixin, BaseSector):
+
+class RoomEight(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomNine", "go_east"),
         Route("rooms.RoomTwelve", "go_south"),
@@ -165,8 +169,13 @@ class RoomEight(DialogueMixin, BaseSector):
         Dialogue("Fog is seeping from the floor.\n"),
     ]
 
+    entities = [
+        "enemies.Skeleton",
+        "enemies.GreenSlime",
+    ]
 
-class RoomNine(DialogueMixin, BaseSector):
+
+class RoomNine(DialogueMixin, MultipleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomThree", "go_north"),
         Route(
@@ -176,12 +185,18 @@ class RoomNine(DialogueMixin, BaseSector):
     ]
 
     dialogue = [
-        Dialogue("The room is massive.\n"),
-        Dialogue("A rusty chandelier is hanging from the ceiling.\n"),
+        Dialogue("Massive pillar can be seen supporting the ceiling.\n"),
+        Dialogue("Piles of bones are scattered across the ground.\n"),
+    ]
+
+    entities = [
+        "enemies.Skeleton",
+        "enemies.Skeleton",
+        "enemies.Skeleton",
     ]
 
 
-class RoomTen(DialogueMixin, BaseSector):
+class RoomTen(DialogueMixin, MultipleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomSix", "go_north"),
         Route("rooms.RoomFourteen", "go_south"),
@@ -192,8 +207,13 @@ class RoomTen(DialogueMixin, BaseSector):
         Dialogue("There are cobwebs in the corners.\n"),
     ]
 
+    entities = [
+        "enemies.Spider",
+        "enemies.Skeleton",
+    ]
 
-class RoomEleven(DialogueMixin, BaseSector):
+
+class RoomEleven(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomSeven", "go_east"),
         Route("rooms.RoomFourteen", "go_south"),
@@ -204,8 +224,13 @@ class RoomEleven(DialogueMixin, BaseSector):
         Dialogue("Unfortunately all the equipments are broken.\n"),
     ]
 
+    entities = [
+        "enemies.Goblin",
+        "enemies.Skeleton",
+    ]
 
-class RoomTwelve(DialogueMixin, BaseSector):
+
+class RoomTwelve(DialogueMixin, MultipleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomSeven", "go_northwest"),
         Route("rooms.RoomEight", "go_northeast"),
@@ -218,8 +243,14 @@ class RoomTwelve(DialogueMixin, BaseSector):
         Dialogue("The stench is unbearable.\n"),
     ]
 
+    entities = [
+        "enemies.Zombie",
+        "enemies.Zombie",
+        "enemies.Skeleton",
+    ]
 
-class RoomThirteen(DialogueMixin, BaseSector):
+
+class RoomThirteen(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomNine", "go_back"),
     ]
@@ -242,7 +273,7 @@ class RoomThirteen(DialogueMixin, BaseSector):
         return super().execute()
 
 
-class RoomFourteen(DialogueMixin, BaseSector):
+class RoomFourteen(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomTen", "go_northwest"),
         Route("rooms.RoomEleven", "go_northeast"),
@@ -251,6 +282,12 @@ class RoomFourteen(DialogueMixin, BaseSector):
 
     dialogue = [
         Dialogue("The room is filled with overgrown vines.\n"),
+    ]
+
+    entities = [
+        "enemies.GreenSlime",
+        "enemies.Skeleton",
+        "enemies.Spider",
     ]
 
 
@@ -278,7 +315,7 @@ class RoomFifteen(DialogueMixin, BaseSector):
         return super().execute()
 
 
-class RoomSixteen(DialogueMixin, BaseSector):
+class RoomSixteen(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomSeventeen", "go_east"),
         Route("rooms.RoomEighteen", "go_south"),
@@ -293,8 +330,10 @@ class RoomSixteen(DialogueMixin, BaseSector):
         Dialogue("Pieces of broken vases are scattered on the floor.\n"),
     ]
 
+    entities = ["enemies.Zombie", "enemies.GreenSlime"]
 
-class RoomSeventeen(DialogueMixin, BaseSector):
+
+class RoomSeventeen(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomTwelve", "go_north"),
         Route("rooms.RoomNineteen", "go_south"),
@@ -306,8 +345,10 @@ class RoomSeventeen(DialogueMixin, BaseSector):
         Dialogue("Broken armor can be seen on their stand.\n"),
     ]
 
+    entities = ["enemies.Zombie", "enemies.FallenPaladin"]
 
-class RoomEighteen(DialogueMixin, BaseSector):
+
+class RoomEighteen(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomSixteen", "go_north"),
         Route("rooms.RoomNineteen", "go_east"),
@@ -318,8 +359,10 @@ class RoomEighteen(DialogueMixin, BaseSector):
         Dialogue("Unknown diagrams painted on the floor.\n"),
     ]
 
+    entities = ["enemies.Zombie", "enemies.HollowKnight"]
 
-class RoomNineteen(DialogueMixin, BaseSector):
+
+class RoomNineteen(DialogueMixin, SingleEntityProcess, BaseSector):
     route = [
         Route("rooms.RoomSeventeen", "go_north"),
         Route("rooms.RoomTwenty", "go_east", "Go East (FINAL BOSS)"),
@@ -329,6 +372,8 @@ class RoomNineteen(DialogueMixin, BaseSector):
     dialogue = [
         Dialogue("A small statue display can be seen in the corner.\n"),
     ]
+
+    entities = ["enemies.Zombie", "enemies.RedSlime"]
 
 
 class RoomTwenty(DialogueMixin, BaseSector):
