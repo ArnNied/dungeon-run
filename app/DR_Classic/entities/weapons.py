@@ -139,7 +139,7 @@ class Axe(Weapon):
         )
 
 
-class AxeOne(Axe, TierOneWeapon):
+class AxeOne(TierOneWeapon, Axe):
     name = Prop("Iron Axe")
 
     attack = RandomizedNumber(12, 23)
@@ -147,7 +147,7 @@ class AxeOne(Axe, TierOneWeapon):
     crit_chance = NumberProp(0.06)
 
 
-class AxeTwo(Axe, TierTwoWeapon):
+class AxeTwo(TierTwoWeapon, Axe):
     name = Prop("Steel Axe")
 
     attack = RandomizedNumber(18, 39)
@@ -155,7 +155,7 @@ class AxeTwo(Axe, TierTwoWeapon):
     crit_chance = NumberProp(0.08)
 
 
-class AxeThree(Axe, TierThreeWeapon):
+class AxeThree(TierThreeWeapon, Axe):
     name = Prop("Daedric Axe")
 
     attack = RandomizedNumber(24, 45)
@@ -184,7 +184,7 @@ class Rapier(Weapon):
         )
 
 
-class RappierOne(Rapier, TierOneWeapon):
+class RappierOne(TierOneWeapon, Rapier):
     name = Prop("Iron Rappier")
 
     attack = RandomizedNumber(7, 10)
@@ -192,7 +192,7 @@ class RappierOne(Rapier, TierOneWeapon):
     crit_chance = NumberProp(0.03)
 
 
-class RappierTwo(Rapier, TierTwoWeapon):
+class RappierTwo(TierTwoWeapon, Rapier):
     name = Prop("Steel Rappier")
 
     attack = RandomizedNumber(12, 15)
@@ -200,7 +200,7 @@ class RappierTwo(Rapier, TierTwoWeapon):
     crit_chance = NumberProp(0.09)
 
 
-class RappierThree(Rapier, TierThreeWeapon):
+class RappierThree(TierThreeWeapon, Rapier):
     name = Prop("Daedric Rappier")
 
     attack = RandomizedNumber(17, 21)
