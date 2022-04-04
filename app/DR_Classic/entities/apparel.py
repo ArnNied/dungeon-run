@@ -64,19 +64,19 @@ class TierThreeApparel(Apparel):
 class LightOne(TierOneApparel):
     name = Prop("Hide Armor")
 
-    parry_rate = NumberProp(0.16)
+    parry_chance = NumberProp(0.16)
 
 
 class LightTwo(TierTwoApparel):
     name = Prop("Leather Armor")
 
-    parry_rate = NumberProp(0.21)
+    parry_chance = NumberProp(0.21)
 
 
 class LightThree(TierThreeApparel):
     name = Prop("Studded Armor")
 
-    parry_rate = NumberProp(0.26)
+    parry_chance = NumberProp(0.26)
 
 
 ##############
