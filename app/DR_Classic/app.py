@@ -10,6 +10,10 @@ class MyGame(DungeonRun):
     PROCESS_CLASS = BattleSequence
     MAIN_ENTITY = Player
 
+    minotaur = 0
+    stone_gargoyle = 0
+    boss = 0
+
     def run(self) -> None:
         try:
             super().run()

@@ -1,8 +1,12 @@
+import time
+
+from app.DR_Classic.core.process import LootEvent
 from app.DR_Classic.core.sector import (
     DialogueMixin,
     MultipleEntityProcess,
     SingleEntityProcess,
 )
+from app.DR_Classic.entities.apparel import HeavyThree, LightThree
 from app.DR_Classic.entities.enemies import Boss, Minotaur, Rat, StoneGargoyle
 from dungeonrun.sector import BaseSector, Dialogue, Route
 from dungeonrun.utils import import_from_app
@@ -166,7 +170,6 @@ class RoomEight(DialogueMixin, SingleEntityProcess, BaseSector):
 
     dialogue = [
         Dialogue("The wind from the nearby room picks up the dust\n"),
-        Dialogue("Fog is seeping from the floor.\n"),
     ]
 
     entities = [
@@ -239,7 +242,7 @@ class RoomTwelve(DialogueMixin, MultipleEntityProcess, BaseSector):
     ]
 
     dialogue = [
-        Dialogue("Decayed corpses are piled in the middle of the room.\n"),
+        Dialogue("Decaying corpses are piled in the middle of the room.\n"),
         Dialogue("The stench is unbearable.\n"),
     ]
 
@@ -256,7 +259,7 @@ class RoomThirteen(DialogueMixin, SingleEntityProcess, BaseSector):
     ]
 
     dialogue = [
-        Dialogue("A big minotaur is sitting on a throne.\n"),
+        Dialogue("A giant minotaur is sitting on a throne.\n"),
         Dialogue("It noticed your presence.\n"),
     ]
 
@@ -269,6 +272,10 @@ class RoomThirteen(DialogueMixin, SingleEntityProcess, BaseSector):
             return import_from_app(
                 self.APP._APP_NAME, "sector.rooms.RoomNine"
             )
+        else:
+            self.APP.minotaur = 1
+            print(f"{Minotaur.name.get()} dropped a {HeavyThree.name.get()}")
+            LootEvent(self.APP.MAIN_ENTITY).handle_drop(HeavyThree)
 
         return super().execute()
 
@@ -311,6 +318,12 @@ class RoomFifteen(DialogueMixin, BaseSector):
             return import_from_app(
                 self.APP._APP_NAME, "sector.rooms.RoomSixteen"
             )
+        else:
+            self.APP.stone_gargoyle = 1
+            print(
+                f"{StoneGargoyle.name.get()} dropped a {LightThree.name.get()}"
+            )
+            LootEvent(self.APP.MAIN_ENTITY).handle_drop(LightThree)
 
         return super().execute()
 
@@ -330,7 +343,10 @@ class RoomSixteen(DialogueMixin, SingleEntityProcess, BaseSector):
         Dialogue("Pieces of broken vases are scattered on the floor.\n"),
     ]
 
-    entities = ["enemies.Zombie", "enemies.GreenSlime"]
+    entities = [
+        "enemies.Zombie",
+        "enemies.GreenSlime",
+    ]
 
 
 class RoomSeventeen(DialogueMixin, SingleEntityProcess, BaseSector):
@@ -345,7 +361,10 @@ class RoomSeventeen(DialogueMixin, SingleEntityProcess, BaseSector):
         Dialogue("Broken armor can be seen on their stand.\n"),
     ]
 
-    entities = ["enemies.Zombie", "enemies.FallenPaladin"]
+    entities = [
+        "enemies.Zombie",
+        "enemies.FallenPaladin",
+    ]
 
 
 class RoomEighteen(DialogueMixin, SingleEntityProcess, BaseSector):
@@ -359,7 +378,10 @@ class RoomEighteen(DialogueMixin, SingleEntityProcess, BaseSector):
         Dialogue("Unknown diagrams painted on the floor.\n"),
     ]
 
-    entities = ["enemies.Zombie", "enemies.HollowKnight"]
+    entities = [
+        "enemies.Zombie",
+        "enemies.HollowKnight",
+    ]
 
 
 class RoomNineteen(DialogueMixin, SingleEntityProcess, BaseSector):
@@ -373,14 +395,68 @@ class RoomNineteen(DialogueMixin, SingleEntityProcess, BaseSector):
         Dialogue("A small statue display can be seen in the corner.\n"),
     ]
 
-    entities = ["enemies.Zombie", "enemies.RedSlime"]
+    entities = [
+        "enemies.Zombie",
+        "enemies.RedSlime",
+    ]
 
 
 class RoomTwenty(DialogueMixin, BaseSector):
     route = [
-        Route("rooms.RoomNineteen", "go_back"),
+        Route("endings.One", "escape"),
+        Route("endings.Two", "stay"),
     ]
 
-    dialogue = [
-        Dialogue("BOSS.\n"),
-    ]
+    @property
+    def dialogue(self):
+        dialogue = [
+            Dialogue("You come accross an eerie looking door.\n"),
+            Dialogue("With two round orb implanted to each of its side.\n"),
+        ]
+
+        if not self.APP.minotaur and not self.APP.stone_gargoyle:
+            dialogue.append(Dialogue("Both of them are blacked out.\n"))
+        elif self.APP.minotaur and self.APP.stone_gargoyle:
+            dialogue.append(Dialogue(f"Both of them are lit up\n"))
+        else:
+            dialogue.append(Dialogue("One of them is lit up.\n"))
+
+        if not self.APP.minotaur or not self.APP.stone_gargoyle:
+            dialogue.append(
+                Dialogue("The door won't budge no mater how hard you try.\n")
+            )
+        else:
+            dialogue.append(Dialogue("The door opened in your presence.\n"))
+            dialogue.append(
+                Dialogue(
+                    "You are greeted with a shadowy figure guarding a door.\n",
+                    1,
+                )
+            )
+            dialogue.append(
+                Dialogue(
+                    "You feel a glimpse of hope coming from that door.\n", 1
+                )
+            )
+
+        return dialogue
+
+    def execute(self) -> "BaseSector":
+        if self.APP.minotaur and self.APP.stone_gargoyle:
+            result = self.APP.PROCESS_CLASS(
+                self.APP.MAIN_ENTITY, Boss()
+            ).execute()
+
+            if not result:
+                return import_from_app(
+                    self.APP._APP_NAME, "sector.rooms.RoomNineteen"
+                )
+            else:
+                self.APP.boss = 1
+        else:
+            time.sleep(2)
+            return import_from_app(
+                self.APP._APP_NAME, "sector.rooms.RoomNineteen"
+            )
+
+        return super().execute()
