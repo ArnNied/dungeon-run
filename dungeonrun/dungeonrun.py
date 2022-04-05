@@ -28,13 +28,16 @@ class DungeonRun:
         self.MAIN_ENTITY = self.MAIN_ENTITY()
 
     def run(self) -> None:
-        sector = self.BEGIN_CLASS(self).execute()
-
         try:
+            sector = self.BEGIN_CLASS(self).execute()
             while True:
                 if self.CLEAR_PREVIOUS:
                     clear_stdout()
                 sector = sector(self).execute()
         except End:
             if self.END_CLASS:
+                if self.CLEAR_PREVIOUS:
+                    clear_stdout()
                 self.END_CLASS(self).execute()
+
+            exit(1)
