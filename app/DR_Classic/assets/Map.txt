@@ -1,0 +1,57 @@
+|=============|===================|===============|	E = Easy
+|1E           |2E                 |3I             |	    Rat, Giant Spider, Goblin
+|                                 |               |	I = Intermediate
+|             |==========|==  ====|               |     Red Slime, Green Slime, Skeleton
+|===  ========|4E        |5E      |               |	H = Hard
+|6E           |                                   |	    Zombie, Undead Knight, Fallen Paladin
+|                        |        |               |	MB1 = Minotaur
+|             |=====  ===|==|=====|==|=====  =====|	MB2 = Gargoyle
+|             |7I           |8I      |9I          |
+|                           |        |            |
+|=  =|========|             |        |            |
+|10I |11I     |             |                     |
+|    |        |             |        |            |
+|    |                               |            |
+|    |        |             |        |            |
+|    |        |=====  ======|===  ===|=====  =====|
+|=  =|==  ====|12H                   |13          |
+|14I          |                      |MB1         |
+|                                    |            |
+|             |                      |            |
+|========|====|===|===  =============|============|
+|15      |16H     |17H               |10          |
+|MB2                                 |BOSS        |
+|        |        |                  |            *
+|        |===  ===|=========|===  ===|            *
+|        |18H               |19H     |            |
+|        |                                        |
+|        |                  |        |            |
+|========|==================|========|============|
+
+
+  N
+W + E
+  S
+
+
+!! ITEMS !!
+
+Iron Sword      : 1E
+Steel Sword     : 7I
+Daedric Sword   : 18H
+
+Iron Rapier     : 6E
+Steel Rapier    : 10I
+Daedric Rapier  : 17H
+
+Iron Axe        : 5E
+Steel Axe       : 9I
+Daedric Axe     : 12H
+
+Wooden Shield   : 5E, 6E
+Iron Shield     : 8I, 11I
+Daedric Shield  : 13MB1
+
+Iron Chainmail  : 2E, 4E
+Steel PLating   : 3I, 12I
+Daedric Armor   : 15MB2
