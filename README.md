@@ -1,9 +1,11 @@
 # dungeon-run
-A semi game-engine for console-based game made using python. Old version can be found [here](https://github.com/ArnNied/dungeon-run-old).
+A small python library to build apps that run only on console. Old version can be found [here](https://github.com/ArnNied/dungeon-run-old).
 
 ## Running
-1. Set pack to be played inside `dungeonrun/config.py`
+1. Drop a valid app inside the `apps` folder
 2. On root directory, `py main.py`
+3. Any valid pack will be listed. Type the one you want to run (case-sensitive)
+4. Press enter
 
 ## Creating your own pack
 **TBA**
