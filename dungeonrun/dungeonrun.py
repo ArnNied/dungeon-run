@@ -1,5 +1,4 @@
 import inspect
-import os
 
 from dungeonrun.entity import BaseEntity
 from dungeonrun.exceptions import End
@@ -18,7 +17,7 @@ class DungeonRun:
     END_CLASS = None
     CLEAR_PREVIOUS = True
 
-    def __init__(self) -> None:
+    def __init__(self) -> "DungeonRun":
         clear_stdout()
         self.prepare()
 

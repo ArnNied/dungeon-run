@@ -2,10 +2,13 @@ import importlib
 import os
 import random
 import time
-from typing import Iterable, Union
+from typing import Union
 
 
 def animate(string_: str, delay: float = 0.014) -> None:
+    """
+    Adds delay before printing each character to "animate" it.
+    """
     for char in string_:
         print(char, end="", flush=True)
         time.sleep(delay)

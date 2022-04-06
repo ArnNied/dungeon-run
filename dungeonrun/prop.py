@@ -9,7 +9,7 @@ class Prop:
     def __str__(self) -> str:
         return f"{self.get()}"
 
-    def __init__(self, val: Any) -> None:
+    def __init__(self, val: Any) -> "Prop":
         self.value = val
 
     def get(self) -> Any:
@@ -82,7 +82,7 @@ class NumberProp(StrictProp):
 
         return value_difference
 
-    def is_underflow(self):
+    def is_underflow(self) -> bool:
         return self.get() < self.underflow.get()
 
     def fix_underflow(self) -> Union[int, float]:
@@ -103,7 +103,7 @@ class PropWithMax(NumberProp):
         max_value: Union[int, float],
         underflow_value: Union[int, float] = 0,
         max_value_underflow_value: Union[int, float] = 0,
-    ) -> None:
+    ) -> "PropWithMax":
         super().__init__(initial_value, underflow_value)
         self.max_value = NumberProp(max_value, max_value_underflow_value)
 

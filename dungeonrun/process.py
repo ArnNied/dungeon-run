@@ -6,7 +6,7 @@ class Process:
     Basic process class.
     """
 
-    def __init__(self, **kwargs) -> None:
+    def __init__(self, **kwargs) -> "Process":
         for key, value in kwargs.items():
             setattr(self, key, value)
 
